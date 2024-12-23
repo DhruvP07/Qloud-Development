@@ -1,20 +1,21 @@
-import { Text, View, StyleSheet } from 'react-native';
-import BottomBar from '@/components/BottomBar';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
+      <Image
+        source={require('@/assets/logo.png')} // Replace with your logo path
+        style={styles.logo}
+      />
       <Text style={styles.title}>Welcome to Qloud</Text>
-      <View style={styles.flowContainer}>
-        <View style={styles.flowItem}><Text>Foundation</Text></View>
-        <View style={styles.flowItem}><Text>Development</Text></View>
-        <View style={styles.flowItem}><Text>Launch</Text></View>
-        <View style={styles.flowItem}><Text>Scale</Text></View>
-      </View>
-      {/* BottomBar always visible */}
-      <View style={styles.bottomBarContainer}>
-          <BottomBar/>
-        </View>
+      <Text style={styles.subtitle}>Empowering your business through innovation and technology.</Text>
+
+      <TouchableOpacity style={styles.ctaButton}>
+        <Link href={'/Home'} style={styles.ctaText}>
+          Learn More
+        </Link>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -24,29 +25,44 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f6f8',
+    padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  logo: {
+    width: 150,
+    height: 150,
     marginBottom: 20,
   },
-  flowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#222',
+    marginBottom: 10,
+    textAlign: 'center',
   },
-  flowItem: {
-    backgroundColor: '#ddd',
-    padding: 10,
-    borderRadius: 5,
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
+    lineHeight: 25,
+    paddingHorizontal: 10,
   },
-  bottomBarContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 2, // Ensures BottomBar is below the drawer
-    paddingBottom: 20,
+  ctaButton: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  ctaText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    textDecorationLine: 'none',
   },
 });
