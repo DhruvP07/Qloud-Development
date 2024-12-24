@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,79 +23,79 @@ const Home: React.FC = () => {
     {
       id: 1,
       username: '@hisroyalfreshness_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '4d',
       content: 'I just got my team for this business yesterday and this is it so far, let me know what you think',
       likes: '7.8K',
       comments: '233',
       shares: '1.4K',
-      image: require('../../assets/team.jpg'), // Replace with your image path
+      image: require('../../../assets/team.jpg'), // Replace with your image path
     },
     {
       id: 2,
       username: '@martineetodayhh_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '3w',
       content: 'I made a shoes brand that is based off old money',
       likes: '24K',
       comments: '983',
       shares: '7.9K',
-      image: require('../../assets/shoes.jpg'), // Replace with your image path
+      image: require('../../../assets/shoes.jpg'), // Replace with your image path
     },
     {
       id: 3,
       username: '@designwithme_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '2w',
       content: 'Just launched my new design portfolio! Check it out and let me know what you think! 🚀',
       likes: '12K',
       comments: '567',
       shares: '3.1K',
-      image: require('../../assets/design.jpg'), // Replace with your image path
+      image: require('../../../assets/design.jpg'), // Replace with your image path
     },
     {
       id: 4,
       username: '@codingenthusiast_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '5d',
       content: 'Developed a React Native app that tracks fitness goals. Feeling pumped! 💪',
       likes: '8.2K',
       comments: '421',
       shares: '2.7K',
-      image: require('../../assets/conn1.png'), // Replace with your image path
+      image: require('../../../assets/conn1.png'), // Replace with your image path
     },
     {
       id: 5,
       username: '@foodielove_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '1d',
       content: 'Discovered the best sushi spot in town. Look at this amazing platter! 🍣',
       likes: '15K',
       comments: '678',
       shares: '4.2K',
-      image: require('../../assets/sushi.jpg'), // Replace with your image path
+      image: require('../../../assets/sushi.jpg'), // Replace with your image path
     },
     {
       id: 6,
       username: '@wanderlustlife_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '1w',
       content: 'Exploring the hidden beaches of Bali 🌴. This view is absolutely breathtaking!',
       likes: '20K',
       comments: '890',
       shares: '5.6K',
-      image: require('../../assets/bali.jpg'), // Replace with your image path
+      image: require('../../../assets/bali.jpg'), // Replace with your image path
     },
     {
       id: 7,
       username: '@petparent_',
-      profilePic: require('../../assets/profile-icon-9.png'), // Replace with your image path
+      profilePic: require('../../../assets/profile-icon-9.png'), // Replace with your image path
       time: '3d',
       content: 'Adopted a new puppy today! Meet Max 🐶. Isn’t he the cutest?',
       likes: '18K',
       comments: '1.2K',
       shares: '6.3K',
-      image: require('../../assets/puppy.jpg'), // Replace with your image path
+      image: require('../../../assets/puppy.jpg'), // Replace with your image path
     },
 
   ];
@@ -106,6 +106,43 @@ const Home: React.FC = () => {
       useNativeDriver: true,
     }).start(() => setActiveTab(tab));
   };
+
+  const [activeStep, setActiveStep] = useState(2); // Current progress step (e.g., 1 for "Foundation", 2 for "Development")
+
+  const animatedValues = {
+    scale: new Animated.Value(1),
+    opacity: new Animated.Value(0.5),
+  };
+
+  const startAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animatedValues.scale, {
+          toValue: 1.1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValues.scale, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    Animated.timing(animatedValues.opacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    startAnimation();
+  }, [activeStep]);
+
+  const progressSteps = ['Foundation', 'Development', 'Launch', 'Scale'];
+
 
   return (
     <View style={styles.container}>
@@ -135,7 +172,7 @@ const Home: React.FC = () => {
           <ScrollView contentContainerStyle={styles.feedContainer}>
             <ScrollView horizontal style={styles.stories}>
               <TouchableOpacity style={styles.story}>
-                <Image source={require('../../assets/profile-icon-9.png')} style={styles.storyImage} />
+                <Image source={require('../../../assets/profile-icon-9.png')} style={styles.storyImage} />
                 <Text style={styles.storyText}>Add Story</Text>
               </TouchableOpacity>
               {posts.map((post) => (
@@ -183,7 +220,7 @@ const Home: React.FC = () => {
               </View>
               <View style={styles.modalBody}>
                 <View style={styles.inputRow}>
-                  <Image source={require('../../assets/profile-icon-9.png')} style={styles.modalProfileImage} />
+                  <Image source={require('../../../assets/profile-icon-9.png')} style={styles.modalProfileImage} />
                   <TextInput
                     placeholder="Update the world?"
                     placeholderTextColor="#aaa"
@@ -214,24 +251,44 @@ const Home: React.FC = () => {
 
       {activeTab === 'Qloud' && (
         <View style={styles.qloudContainer}>
-          <View style={styles.progress}>
-            <View style={[styles.progressCircle, styles.activeCircle]}>
-              <Text style={styles.progressText}>Foundation</Text>
+        <Text style={styles.progressTitle}>Your Progress</Text>
+        <View style={styles.progress}>
+          {progressSteps.map((step, index) => (
+            <View style={styles.stepContainer} key={index}>
+              {/* Line between steps */}
+              {index !== 0 && (
+                <View
+                  style={[
+                    styles.progressLine,
+                    index <= activeStep && styles.activeLine,
+                  ]}
+                />
+              )}
+              {/* Animated Circle */}
+              <TouchableOpacity
+                style={[
+                  styles.progressCircle,
+                  index <= activeStep ? styles.activeCircle : styles.inactiveCircle,
+                ]}
+                onPress={() => setActiveStep(index)}
+              >
+                {index === activeStep ? (
+                  <Animated.View
+                    style={[
+                      styles.pulseEffect,
+                      {
+                        transform: [{ scale: animatedValues.scale }],
+                        opacity: animatedValues.opacity,
+                      },
+                    ]}
+                  />
+                ) : null}
+                <Text style={styles.progressText}>{step}</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.progressLine} />
-            <View style={[styles.progressCircle, styles.activeCircle]}>
-              <Text style={styles.progressText}>Development</Text>
-            </View>
-            <View style={styles.progressLine} />
-            <View style={styles.progressCircle}>
-              <Text style={styles.progressText}>Launch</Text>
-            </View>
-            <View style={styles.progressLine} />
-            <View style={styles.progressCircle}>
-              <Text style={styles.progressText}>Scale</Text>
-            </View>
-          </View>
+          ))}
         </View>
+      </View>
       )}
     </View>
   );
@@ -391,7 +448,7 @@ const styles = StyleSheet.create({
   modalActions: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: 20,
+    marginTop: -150,
     marginBottom: 10
   },
   icon: {
@@ -404,6 +461,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 10,
     alignItems: 'center',
+    marginTop: -400,
+    marginBottom: 350
   },
   postButtonText: {
     color: 'black',
@@ -444,32 +503,64 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+  },
+  progressTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#333',
   },
   progress: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  stepContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   progressCircle: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 40,
-    backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
   activeCircle: {
     backgroundColor: '#34C759',
+    elevation: 5,
+    shadowColor: '#34C759',
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  inactiveCircle: {
+    backgroundColor: '#e0e0e0',
   },
   progressText: {
-    color: 'white',
     fontWeight: 'bold',
+    color: 'white',
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: 10,
+    zIndex: 1,
   },
   progressLine: {
-    width: 30,
-    height: 2,
-    backgroundColor: 'black',
+    width: 40,
+    height: 4,
+    backgroundColor: '#e0e0e0',
+  },
+  activeLine: {
+    backgroundColor: '#34C759',
+  },
+  pulseEffect: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(52, 199, 89, 0.5)',
+    zIndex: 0,
   },
 });
 

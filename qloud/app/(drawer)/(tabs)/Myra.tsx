@@ -7,7 +7,7 @@ const AssistantUI: React.FC = () => {
     <View style={styles.container}>
       {/* Heading */}
       <Image
-        source={require('../../assets/logo.png')}
+        source={require('../../../assets/logo.png')}
         style = {styles.logo}
       />
       <Text style={styles.heading}>What can I help with?</Text>

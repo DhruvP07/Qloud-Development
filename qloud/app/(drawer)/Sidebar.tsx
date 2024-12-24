@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
+import { router, Router, useRouter } from 'expo-router';
 
 interface SidebarProps {
   navigation: any;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
+  navigation = useRouter();
   return (
     <View style={styles.container}>
       {/* Profile Section */}
@@ -21,42 +23,46 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
 
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Files')}>
+      <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Home')}>
+          <MaterialIcons name="home" size={20} color="white" />
+          <Text style={styles.menuText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="folder" size={20} color="white" />
           <Text style={styles.menuText}>Files</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Roles')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="settings" size={20} color="white" />
           <Text style={styles.menuText}>Roles</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Calendar')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="calendar-today" size={20} color="white" />
           <Text style={styles.menuText}>Calendar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Mentor')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <FontAwesome5 name="chalkboard-teacher" size={20} color="white" />
           <Text style={styles.menuText}>Mentor</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Team')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="group" size={20} color="white" />
           <Text style={styles.menuText}>Team</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Community')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <FontAwesome5 name="users" size={20} color="white" />
           <Text style={styles.menuText}>Community</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Links')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <Entypo name="link" size={20} color="white" />
           <Text style={styles.menuText}>Links</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Speeches')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <Feather name="mic" size={20} color="white" />
           <Text style={styles.menuText}>Speeches</Text>
         </TouchableOpacity>
@@ -65,24 +71,28 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
         <View style={styles.divider} />
 
         {/* Footer Items */}
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Settings')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="settings" size={20} color="white" />
           <Text style={styles.menuText}>Settings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HelpCenter')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="help-outline" size={20} color="white" />
           <Text style={styles.menuText}>Help Center</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Contact')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="call" size={20} color="white" />
           <Text style={styles.menuText}>Contact</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('SocialMedia')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <Entypo name="network" size={20} color="white" />
           <Text style={styles.menuText}>Social Media</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/')}>
+          <Entypo name="login" size={20} color="white" />
+          <Text style={styles.menuText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>

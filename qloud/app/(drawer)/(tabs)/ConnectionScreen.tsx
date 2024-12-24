@@ -21,7 +21,7 @@ const Connection: React.FC = () => {
       price: '3499$',
       likes: '739K',
       revenue: '1.26M',
-      image: require('../../assets/conn1.png'), // Use require here
+      image: require('../../../assets/conn1.png'), // Use require here
     },
     {
       id: 2,
@@ -30,7 +30,7 @@ const Connection: React.FC = () => {
       price: '1999$',
       likes: '500K',
       revenue: '890K',
-      image: require('../../assets/conn2.jpeg'),
+      image: require('../../../assets/conn2.jpeg'),
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ const Connection: React.FC = () => {
       price: '750$',
       likes: '600K',
       revenue: '2.5M',
-      image: require('../../assets/Conn3.jpeg'),
+      image: require('../../../assets/Conn3.jpeg'),
     },
     {
       id: 4,
@@ -48,7 +48,7 @@ const Connection: React.FC = () => {
       price: '23000$',
       likes: '1.2M',
       revenue: '8.5M',
-      image: require('../../assets/conn4.jpg'),
+      image: require('../../../assets/conn4.jpg'),
     },
     {
       id: 5,
@@ -57,7 +57,7 @@ const Connection: React.FC = () => {
       price: '3999$',
       likes: '2M',
       revenue: '6.7M',
-      image: require('../../assets/conn5.png'),
+      image: require('../../../assets/conn5.png'),
     },
     {
       id: 6,
@@ -66,19 +66,13 @@ const Connection: React.FC = () => {
       price: '2700$',
       likes: '800K',
       revenue: '3.2M',
-      image: require('../../assets/conn6.png'),
+      image: require('../../../assets/conn6.png'),
     },
   ];
   
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.sellButton}>
-          <Text style={styles.sellButtonText}>Sell</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Search Bar */}
       <View style={styles.searchBar}>
@@ -138,16 +132,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     padding: 10,
     backgroundColor: 'black',
-  },
-  sellButton: {
-    backgroundColor: 'white',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-  sellButtonText: {
-    color: 'black',
-    fontWeight: 'bold',
   },
   searchBar: {
     padding: 10,
@@ -227,10 +211,12 @@ const styles = StyleSheet.create({
   productLikes: {
     color: 'red',
     fontSize: 12,
+    fontWeight: 'bold'
   },
   productRevenue: {
     color: 'green',
     fontSize: 12,
+    fontWeight: 'bold'
   },
   productPrice: {
     color: 'green',
