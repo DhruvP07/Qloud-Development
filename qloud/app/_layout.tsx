@@ -7,7 +7,7 @@ import Sidebar from './(drawer)/Sidebar'; // Import Sidebar component
 import BottomBar from '../components/BottomBar'; // Import BottomBar component
 import HomeScreen from './index'; // Replace with actual paths
 import NotificationsScreen from './(drawer)/(screens)/NotificationsScreen';
-import ProfileScreen from './(drawer)/(screens)/ProfileScreen';
+import ProfileScreen from './(drawer)/(screens)/Profile';
 import SettingsScreen from './(drawer)/(screens)/SettingsScreen';
 
 

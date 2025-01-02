@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   ctaButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'black',
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 8,
