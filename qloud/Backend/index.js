@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false}));
 
 
 //MongoDB Connection
-connectMongoDb('mongodb://localhost:27017/Qloud')
+connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb.net/Qloud')
     .then(() => console.log('connected to mongoDb'))
     .catch((err) => console.log('Error connecting to MongoDB', err))
 
