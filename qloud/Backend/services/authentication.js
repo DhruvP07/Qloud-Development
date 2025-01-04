@@ -8,13 +8,19 @@ function createTokenUser(user){
         email: user.email,
         role: user.role
     }
-    const token = JWT.sign(payload, secret);
+    const token = JWT.sign(payload, secret, { expiresIn: '1m' });
     return token;
 }
 
 function validateToken(token){
-    const payload = JWT.verify(token, secret)
-    return payload;
+    // Verify the token
+    try {
+        const payload = JWT.verify(token, secret);
+        //console.log("Payload", payload);
+        return payload
+    } catch (err) {
+        console.error(err.message);
+    }
 }
 
 module.exports = { createTokenUser, validateToken }

@@ -4,9 +4,10 @@ const { createTokenUser } = require('../services/authentication');
 
 async function handleUserSignup(req, res){
     const {firstName, lastName, email, password} = req.body;
-    //console.log(firstName, lastName, email, password);
+    console.log(firstName, lastName, email, password);
     try{
-        const checkUser = await User.find({email});
+        const checkUser = await User.findOne({email});
+        console.log("CheckUser", checkUser);
         if (checkUser) return res.json({status: 'failure', message: 'User already exists'});
 
         const result = await User.create({
@@ -31,10 +32,11 @@ async function handleUserSignin(req, res){
         //Check if user exists
         const chechUser = await User.findOne({email});
         if (!chechUser) return res.json({status: 'failure', message: 'User does not exist'});
-        console.log(chechUser);
+        //console.log(chechUser);
+
         //To check if the password is correct
         const salt  = chechUser.salt;
-        console.log(salt);
+        //console.log(salt);
         const hashedPassword = chechUser.password;
         const userProvidedPassword = createHmac('sha256', salt).update(password).digest('hex');
 
@@ -48,7 +50,7 @@ async function handleUserSignin(req, res){
 
         //return token
         //console.log("token", token)
-        return res.json({status: 'success', message: 'User logged in successfully', token});
+        return res.json({status: 'success', message: 'User logged in successfully', token, user: chechUser});
     }catch(e){
         console.log(e);
     }
