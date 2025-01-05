@@ -19,7 +19,7 @@ function validateToken(token){
         //console.log("Payload", payload);
         return payload
     } catch (err) {
-        console.error(err.message);
+        //console.error(err.message);
     }
 }
 

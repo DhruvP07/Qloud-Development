@@ -4,10 +4,10 @@ const { createTokenUser } = require('../services/authentication');
 
 async function handleUserSignup(req, res){
     const {firstName, lastName, email, password} = req.body;
-    console.log(firstName, lastName, email, password);
+    //console.log(firstName, lastName, email, password);
     try{
         const checkUser = await User.findOne({email});
-        console.log("CheckUser", checkUser);
+        //console.log("CheckUser", checkUser);
         if (checkUser) return res.json({status: 'failure', message: 'User already exists'});
 
         const result = await User.create({
