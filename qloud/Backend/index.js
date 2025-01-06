@@ -1,9 +1,17 @@
 console.log('Backend/index.js');
+//Server
 const express = require('express');
+
+//Database
 const mongoose = require('mongoose');
 const {connectMongoDb} = require('./connections');
-const userRouter = require('./routes/users');
 
+//Middlewares
+const { checkForAuthentication, restrictTo } = require('./middlewares/authentication');
+
+//Routes
+const userRouter = require('./routes/usersAuthenticationRoute');
+const userProfileRouter = require('./routes/userProfileRoute');
 
 //Server
 const app = express();
@@ -13,6 +21,7 @@ PORT = 7000;
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
+app.use(checkForAuthentication);
 
 
 //MongoDB Connection
@@ -22,6 +31,7 @@ connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb
 
 
 //Routers
-app.use('/user', userRouter);
+app.use('/user/auth', userRouter);
+app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
 
 app.listen(PORT, ()=>{console.log(`Server Started at port, ${PORT}`)})
