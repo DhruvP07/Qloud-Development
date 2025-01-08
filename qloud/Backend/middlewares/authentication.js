@@ -12,6 +12,7 @@ function checkForAuthentication(req,res, next){
     req.user = user;
 
     //console.log(req.user)
+    //console.log(req.user)
     return next();
 }
 
