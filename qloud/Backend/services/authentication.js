@@ -8,7 +8,7 @@ function createTokenUser(user){
         email: user.email,
         role: user.role
     }
-    const token = JWT.sign(payload, secret, { expiresIn: '1m' });
+    const token = JWT.sign(payload, secret, { expiresIn: '59m' });
     return token;
 }
 
@@ -19,7 +19,7 @@ function validateToken(token){
         //console.log("Payload", payload);
         return payload
     } catch (err) {
-        //console.error(err.message);
+        console.error(err.message);
     }
 }
 
