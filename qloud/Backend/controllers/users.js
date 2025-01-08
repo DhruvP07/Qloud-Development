@@ -1,6 +1,7 @@
 const { User } = require('../models/users');
-const { createHmac } = require('crypto');
+const { createHmac, randomBytes } = require('crypto');
 const { createTokenUser, validateToken } = require('../services/authentication');
+const bcrypt = require('bcrypt');
 
 var nodemailer = require('nodemailer');
 
@@ -24,11 +25,14 @@ async function handleUserSignup(req, res){
             });
         }
 
+        const salt = 12;
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         const result = await User.create({
             firstName,
             lastName,
             email,
-            password
+            password:hashedPassword
         });
         //console.log(result);
         return res.status(201).json({status: 'success', message: `User added successfully`})
@@ -49,18 +53,13 @@ async function handleUserSignin(req, res){
         //console.log(chechUser);
 
         //To check if the password is correct
-        const salt  = chechUser.salt;
-        //console.log(salt);
-        const hashedPassword = chechUser.password;
-        const userProvidedPassword = createHmac('sha256', salt).update(password).digest('hex');
-
-        if(userProvidedPassword !== hashedPassword) {
-            return res.json({status: 'failure', message: 'Incorrect password'})
+        const isPasswordCorrect = await bcrypt.compare(password, chechUser.password); // Assuming `password` in the database is hashed
+        if (!isPasswordCorrect) {
+            return res.json({ status: 'failure', message: 'Incorrect password' });
         }
 
         //Generating the token.
         const token = createTokenUser(chechUser)
-
 
         //return token
         //console.log("token", token)
@@ -109,11 +108,14 @@ async function handleUserforgotPassword(req, res){
 async function handleUserResetPassword(req, res) {
     const {id, token} = req.params;
     const {password} = req.body;
-    console.log("id: ", id,"token: ", token);
     const user = validateToken(token);
-    console.log(user);
-    if (!user) return res.json({status: 'failure', message: 'Issue with token'});
-    await User.findByIdAndUpdate({_id:id}, {password});
+    //Check if the token is valid of not
+    if (!user) return res.json({status: 'failure', message: 'invalid Token'});
+
+    //Hashing password.
+    const salt = 12;
+    const hashedPassword = await bcrypt.hash(password, salt);
+    await User.findByIdAndUpdate({_id:id}, { password: hashedPassword});
     return res.json({status:"success", message: "Password Updated Successfully"});
 }
 
