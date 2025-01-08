@@ -1,3 +1,4 @@
+//console.log(trial)
 const { User } = require('../models/users');
 const { createHmac, randomBytes } = require('crypto');
 const { createTokenUser, validateToken } = require('../services/authentication');
