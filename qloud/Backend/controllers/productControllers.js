@@ -73,15 +73,36 @@ async function handleAddProduct(req, res){
 
 async function handleUpdateProduct(req, res){
     try{
+        let updatedProduct
         const { id } = req.params;
-        console.log(req.files);
+        // console.log(req.files);
+        // console.log(req.body);
 
-        // if(req.body.name){ console.log(req.body.name) };
-        // if(req.body.image1){{ console.log(req.body.image1) };}
-        return res.status(200).json({success: true, message: "Product updated Successfully"});
+        if(req.body.name){ 
+            //console.log(req.body.name);
+            req.body.slug = slugify(req.body.name);
+        };
+
+        if(req.body.category){
+            //Getting Product Category
+            const getProductCategory = await productCategory.findOne({slug:slugify(req.body.category).toLowerCase()});
+            if (!getProductCategory) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Product category not found"
+                });
+            }
+        
+            // Replace the category field in req.body with the corresponding ObjectId
+            req.body.category = getProductCategory._id;
+        }
+
+        // if(req.files.image1){{ console.log(req.files.image1) };}
+        updatedProduct = await product.findByIdAndUpdate(id, req.body, { new: true }).populate("category");
+        return res.status(200).json({success: true, message: "Product updated Successfully", updatedProduct});
 
     } catch(error){
-        console.log(error);
+        // console.log(error);
         res.status(500).send({
             success: false,
             error: error,
@@ -110,8 +131,10 @@ async function handleGetAllProducts(req, res){
 async function handleGetAProduct(req, res){
     try{
         const { id } = req.params;
-        console.log(id);
+
+        //console.log(id);
         const newProduct = await product.findById(_id=id).populate('category');
+        if (!newProduct){ return res.status(404).json({success:false, message: "Could not find the product."})}
         return res.status(200).json({
             success: true,
             message: "Product",
@@ -131,6 +154,7 @@ async function handleDeleteProduct(req, res){
     try{
         const { id } = req.params;
         const deletedProduct = await product.findByIdAndDelete(_id = id).populate('category');
+        if (!deletedProduct){ return res.status(404).json({success:false, message: "Could not find the product."})}
         return res.status(200).json({
             success: true,
             message: "Successfully Deleted a product.",
