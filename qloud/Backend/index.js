@@ -11,7 +11,7 @@ const { checkForAuthentication, restrictTo } = require('./middlewares/authentica
 
 //Routes
 const userRouter = require('./routes/usersAuthenticationRoutes');
-//const productRouter = require('./routes/productRoutes');
+const productRouter = require('./routes/productRoutes');
 const productCategoryRouter = require('./routes/productCategoryRoutes');
 const userProfileRouter = require('./routes/userProfileRoutes');
 
@@ -41,6 +41,6 @@ app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
 app.use("/product-category", productCategoryRouter);
 
 //Product Routes    --- Restricted to Bsiness person
-//app.use("/product", productRouter);
+app.use("/product", productRouter);
 
 app.listen(PORT, ()=>{console.log(`Server Started at port, ${PORT}`)});
