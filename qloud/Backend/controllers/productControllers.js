@@ -7,14 +7,27 @@ async function handleAddProduct(req, res){
     try{
         const { name, description, price, category, quantity } = req.body
 
+        switch(true){
+            case !name:
+                return res.status().json({success: false, message: "Name is required"})
+            case !description:
+                return res.status().json({success: false, message: "Description is required"})
+            case !price:
+                return res.status().json({success: false, message: "Price is required"})
+            case !category:
+                return res.status().json({success: false, message: "Category is required"})
+            case !quantity:
+                return res.status().json({success: false, message: "Quantity is required"})
+        }
+
         //Checking if the already exists or not.
-        const findSlug = await product.find({slug:slugify(name)});
+        const findSlug = await product.find({slug:slugify(name)}).populate("category");
         if(findSlug.length > 0){
             return res.status(200).json({success:true, message: "Product already exists"})
         }
 
         //Getting Product Category
-        const productCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
 
         //uploading Images to cloudinary and generating URLs
         const image1 = req.files.image1 && req.files.image1[0];
@@ -30,15 +43,18 @@ async function handleAddProduct(req, res){
         );
         
         //Creating a new record.
-        const newProduct = await product.create({
+        const newProductWithoutCategory = await product.create({
             name, 
             slug: slugify(name),
             description,
             price,
-            category: productCategoryId.id,
+            category: getProductCategory.id,
             quantity,
             images: imageUrl
         });
+
+        // Getting the same record with category populated.
+        const newProduct = await product.findById(newProductWithoutCategory._id).populate("category");
         
         //Generating a new response.
         return res.status(201).json({
@@ -55,4 +71,79 @@ async function handleAddProduct(req, res){
     }
 }
 
-module.exports = { handleAddProduct }
+async function handleUpdateProduct(req, res){
+    try{
+        const { id } = req.params;
+        console.log(req.files);
+
+        // if(req.body.name){ console.log(req.body.name) };
+        // if(req.body.image1){{ console.log(req.body.image1) };}
+        return res.status(200).json({success: true, message: "Product updated Successfully"});
+
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error: error,
+            message: "Error while updating the products."
+        });
+    }
+}
+
+async function handleGetAllProducts(req, res){
+    try{
+        const allProducts = await product.find({}).populate('category');
+        return res.status(200).json({
+            success: true,
+            message: "All Products",
+            allProducts
+        })
+    } catch(error){
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error while gettting the products."
+        });
+    }
+}
+
+async function handleGetAProduct(req, res){
+    try{
+        const { id } = req.params;
+        console.log(id);
+        const newProduct = await product.findById(_id=id).populate('category');
+        return res.status(200).json({
+            success: true,
+            message: "Product",
+            newProduct
+        })
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error while gettting the product."
+        });
+    }
+}
+
+async function handleDeleteProduct(req, res){
+    try{
+        const { id } = req.params;
+        const deletedProduct = await product.findByIdAndDelete(_id = id).populate('category');
+        return res.status(200).json({
+            success: true,
+            message: "Successfully Deleted a product.",
+            deletedProduct
+        })
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error while deleting the product."
+        });
+    }
+}
+
+module.exports = { handleAddProduct, handleUpdateProduct, handleGetAllProducts, handleGetAProduct, handleDeleteProduct }
