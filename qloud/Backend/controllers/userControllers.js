@@ -1,5 +1,5 @@
 //console.log(trial)
-const { User } = require('../models/users');
+const { User } = require('../models/userModel');
 const { createHmac, randomBytes } = require('crypto');
 const { createTokenUser, validateToken } = require('../services/authentication');
 const bcrypt = require('bcrypt');
