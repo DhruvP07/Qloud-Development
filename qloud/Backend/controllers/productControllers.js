@@ -71,12 +71,70 @@ async function handleAddProduct(req, res){
     }
 }
 
+// async function handleUpdateProduct(req, res){
+//     try{
+//         const { name, description, price, category, quantity } = req.body
+//         const { id } = req.params;
+//         switch(true){
+//             case !name:
+//                 return res.status().json({success: false, message: "Name is required"})
+//             case !description:
+//                 return res.status().json({success: false, message: "Description is required"})
+//             case !price:
+//                 return res.status().json({success: false, message: "Price is required"})
+//             case !category:
+//                 return res.status().json({success: false, message: "Category is required"})
+//             case !quantity:
+//                 return res.status().json({success: false, message: "Quantity is required"})
+//         }
+
+//         //Getting Product Category
+//         const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+
+//         //uploading Images to cloudinary and generating URLs
+//         const image1 = req.files.image1 && req.files.image1[0];
+//         const image2 = req.files.image2 && req.files.image2[0];
+
+//         const images = [image1, image2].filter((item)=> item !== undefined);
+
+//         let imageUrl = await Promise.all(
+//             images.map(async (item)=>{
+//                 let result = await cloudinary.uploader.upload(item.path, {resource_type: 'image'});
+//                 return result.secure_url;
+//             })
+//         );
+//         console.log(id);
+//         //Updating a new record.
+//         const updatedProduct = await product.findByIdAndUpdate(id ,{
+//             name, 
+//             slug: slugify(name),
+//             description,
+//             price,
+//             category: getProductCategory.id,
+//             quantity,
+//             images: imageUrl
+//         }, {new:true}).populate("category");
+        
+//         //Generating a new response.
+//         return res.status(201).json({
+//             success: true,
+//             message: "Product Updated successfully",
+//             updatedProduct
+//         })
+//     } catch(error){
+//         res.status(500).send({
+//             success: false,
+//             error,
+//             message: "Error while adding the product."
+//         });
+//     }
+// }
+
 async function handleUpdateProduct(req, res){
     try{
         let updatedProduct
         const { id } = req.params;
         // console.log(req.files);
-        // console.log(req.body);
 
         if(req.body.name){ 
             //console.log(req.body.name);
@@ -96,6 +154,23 @@ async function handleUpdateProduct(req, res){
             // Replace the category field in req.body with the corresponding ObjectId
             req.body.category = getProductCategory._id;
         }
+
+        if (req.files){
+            //uploading Images to cloudinary and generating URLs
+            const image1 = req.files.image1 && req.files.image1[0];
+            const image2 = req.files.image2 && req.files.image2[0];
+
+            const images = [image1, image2].filter((item)=> item !== undefined);
+
+            let imageUrl = await Promise.all(
+                images.map(async (item)=>{
+                    let result = await cloudinary.uploader.upload(item.path, {resource_type: 'image'});
+                    return result.secure_url;
+                })
+            );
+            req.body.images = imageUrl;
+        }
+        
 
         // if(req.files.image1){{ console.log(req.files.image1) };}
         updatedProduct = await product.findByIdAndUpdate(id, req.body, { new: true }).populate("category");
