@@ -1,5 +1,6 @@
 console.log('Backend/index.js');
 //Server
+//console.log("Comment for trial")
 const express = require('express');
 
 //Database
@@ -17,7 +18,7 @@ const userProfileRouter = require('./routes/userProfileRoutes');
 
 //Server
 const app = express();
-PORT = 7000;
+PORT = 8000;
 
 
 //Middlewares
