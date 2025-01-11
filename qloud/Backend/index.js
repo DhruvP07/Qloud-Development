@@ -1,6 +1,5 @@
 console.log('Backend/index.js');
 //Server
-//console.log("Comment for trial")
 const express = require('express');
 
 //Database
