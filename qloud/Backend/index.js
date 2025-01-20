@@ -14,6 +14,7 @@ const userRouter = require('./routes/usersAuthenticationRoutes');
 const productRouter = require('./routes/productRoutes');
 const productCategoryRouter = require('./routes/productCategoryRoutes');
 const userProfileRouter = require('./routes/userProfileRoutes');
+const cartRouter = require('./routes/cartRoutes')
 
 //Server
 const app = express();
@@ -40,7 +41,10 @@ app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
 //Product-category routes  -- Restricted to Admin
 app.use("/product-category", productCategoryRouter);
 
-//Product Routes    --- Restricted to Bsiness person
+//Product Routes    --- Restricted to Business person
 app.use("/product", productRouter);
+
+//Cart Routes -- Restricted to user. need to add restrictTo["USER"] later.  
+app.use("/cart", cartRouter);
 
 app.listen(PORT, ()=>{console.log(`Server Started at port, ${PORT}`)});
