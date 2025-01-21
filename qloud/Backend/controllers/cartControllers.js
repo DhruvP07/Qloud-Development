@@ -5,7 +5,7 @@ async function handleAddProductToCart(req, res) {
     try{
         const {userId, productId, quantity} = req.body;
 
-        console.log(req.body);
+        //console.log(req.body);
         if(!userId || !productId || quantity <0 ){
             return res.status(404).json({
                 success : false,
@@ -17,7 +17,7 @@ async function handleAddProductToCart(req, res) {
 
         if(!findProduct){
             return res.status(404).json({
-                success : true,
+                success : false,
                 message : 'Product Not found.'
             })
         }
@@ -30,7 +30,7 @@ async function handleAddProductToCart(req, res) {
         }
 
         //Find Current Product Index to increase the quantity
-        const findCurrentProductIndex = currentCart.items.findIndex(item => item.productId.toString() = productId);
+        const findCurrentProductIndex = currentCart.items.findIndex(item => item.productId.toString() === productId);
         
         if(findCurrentProductIndex === -1){
             currentCart.items.push({
@@ -73,9 +73,9 @@ async function handleUpdateCartItems(req, res) {
 
 async function handleFetchCartItems(req, res) {
     try{
-         const {userId} = req.params;
+        const {userId} = req.params;
 
-         if (!userId){
+        if (!userId){
             res.status(400).json({
                 success : false,
                 message : "UserId is mandatory."
@@ -89,11 +89,24 @@ async function handleFetchCartItems(req, res) {
         if(!currentCart){
             return res.status(404).json({
                 success: false,
-                message: "Cart not found"
+                message: "No Items found."
             })
         }
 
+        //Finding valid cart items
+        const validItems = currentCart.items.filter((productItem) => {
+            console.log('productItem.productId, ', productItem.productId)
+            return productItem.productId;
+        });
+
+        if(validItems.length<currentCart.items.length){
+            currentCart.items = validItems
+            currentCart.save();
+        }
+
         return res.json({
+            success: true,
+            message: "Cart fetched successfully.",
             currentCart
         })
 
