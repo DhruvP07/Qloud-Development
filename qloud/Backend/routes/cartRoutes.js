@@ -3,7 +3,9 @@ const { handleAddProductToCart, handleUpdateCartItems, handleFetchCartItems, han
 
 const router = express.Router();
 
-router.post("/addProductToCart", handleAddProductToCart)
-router.get("/getProductFromCart/:userId", handleFetchCartItems)
+router.post("/addProductToCart", handleAddProductToCart);
+router.get("/getProductFromCart/:userId", handleFetchCartItems);
+router.put("/updateProductToCart", handleUpdateCartItems)
+router.post("/deleteProductFromCart", handleDeleteCartItems)
 
 module.exports = router;

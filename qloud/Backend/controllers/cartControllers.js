@@ -60,6 +60,48 @@ async function handleAddProductToCart(req, res) {
 
 async function handleUpdateCartItems(req, res) {
     try{
+        const {userId, productId, quantity} = req.body;
+        //console.log(req.body);
+
+        if(!userId || !productId){
+            return res.status(404).json({
+                success : false,
+                message : "Invalid data provided."
+            });
+        }
+
+        const currentCart = await cart.findOne({userId})
+
+        if(!currentCart){
+            return res.status(404).json({
+                success: false,
+                message: "Cart not found."
+            })
+        }
+
+        //Find Current Product Index to increase the quantity
+        const findCurrentProductIndex = currentCart.items.findIndex(item => item.productId.toString() === productId);
+
+        //console.log(currentCart.items[0].productId);
+        if(findCurrentProductIndex === -1){
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        currentCart.items[findCurrentProductIndex].quantity = quantity;
+        await currentCart.save();
+
+        await currentCart.populate({
+            path: 'items.productId'
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Item Quantity updated Successfully.',
+            currentCart
+        });
 
     } catch(error) {
         console.log(error);
@@ -95,7 +137,7 @@ async function handleFetchCartItems(req, res) {
 
         //Finding valid cart items
         const validItems = currentCart.items.filter((productItem) => {
-            console.log('productItem.productId, ', productItem.productId)
+            //console.log('productItem.productId, ', productItem.productId)
             return productItem.productId;
         });
 
@@ -103,6 +145,13 @@ async function handleFetchCartItems(req, res) {
             currentCart.items = validItems
             currentCart.save();
         }
+
+        // const populateCartItems = validItems.map(item=>({
+        //     productId : item.productId._id,
+        //     images : item.productId.images,
+        //     price : item.productId.price,
+        //     name : item.productId.name,
+        // }));
 
         return res.json({
             success: true,
@@ -123,6 +172,47 @@ async function handleFetchCartItems(req, res) {
 
 async function handleDeleteCartItems(req, res) {
     try{
+        const {userId, productId} = req.body;
+        //console.log(req.body);
+
+        if(!userId || !productId){
+            return res.status(404).json({
+                success : false,
+                message : "Invalid data provided."
+            });
+        }
+
+        const currentCart = await cart.findOne({userId}).populate({
+            path: 'items.productId'
+        });
+
+        if(!currentCart){
+            return res.status(404).json({
+                success: false,
+                message: "Cart not found."
+            })
+        }
+
+        deletedItem = currentCart.items.filter(item => item.productId._id.toString() === productId);
+        if(deletedItem.length == 0){ 
+            console.log(deletedItem.length);
+            return res.status(404).json({
+                success: false,
+                message: "Items not present in the cart.",
+            })
+        }
+        filteredItems = currentCart.items.filter(item => item.productId._id.toString() !== productId);
+        currentCart.items = filteredItems;
+        await currentCart.save();
+
+
+
+        return res.status(200).json({
+            succcess: true,
+            message: "Item deleted successfully.",
+            currentCart,
+            deletedItem
+        });
 
     } catch(error) {
         console.log(error);
