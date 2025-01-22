@@ -1,22 +1,34 @@
-const { productCategory } = require("../models/productCategoryModel");
+const { productSubCategory } = require("../models/productSubCategoryModel");
 const slugify = require("slugify");
 
-async function handleAddProductCategory(req, res){
+async function handleAddProductSubCategory(req, res){
     try{
-        const { name } = req.body;
-        if (!name){
-            return res.status(401).json({message: "Name is required"})
+        const { name, category } = req.body;
+        //Checking of name and category are present in the input.
+        switch(true){
+            case !name:
+                return res.status().json({success: false, message: "Name is required"})
+            case !category:
+                return res.status().json({success: false, message: "Category is required"})
         }
-        const existingCategory = await productCategory.findOne({slug: slugify(name)});
-        if (existingCategory){
+
+        //Checking if the sub-category already exists or not.
+        const existingSubCategory = await productCategory.findOne({slug: slugify(name)})
+        if (existingSubCategory){
             return res.status(200).json({
                 success: true,
-                message: "Product Category already exists"
+                message: "Product Sub-category already exists."
             });
         }
-        const category = await productCategory.create({
+
+        //Getting the category of the sub-category.
+        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+
+        //Providing the response.
+        const subCategory = await productCategory.create({
             name,
-            slug: slugify(name)
+            slug: slugify(name),
+            category: getProductCategory.id
         })
         return res.status(201).json({success: true, message: "New Category added", category});
     } catch(error){
