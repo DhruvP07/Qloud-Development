@@ -69,7 +69,7 @@ async function handleGetAProductCategory(req, res){
     try{
         const { id } = req.params;
         const category = await productCategory.findById(_id=id);
-        if (!category){ return res.status(404).json({success:false, message: "Could not find the product."})}
+        if (!category){ return res.status(404).json({success:false, message: "Could not find the product vategory."})}
         return res.status(200).json({success: true, message: "Item fetched succesfully", category});
     } catch(error){
         return res.status(500).json({

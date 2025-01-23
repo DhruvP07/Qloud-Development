@@ -13,6 +13,7 @@ const { checkForAuthentication, restrictTo } = require('./middlewares/authentica
 const userRouter = require('./routes/usersAuthenticationRoutes');
 const productRouter = require('./routes/productRoutes');
 const productCategoryRouter = require('./routes/productCategoryRoutes');
+const productSubCategoryRouter = require('./routes/productSubCategoryRoutes');
 const userProfileRouter = require('./routes/userProfileRoutes');
 const cartRouter = require('./routes/cartRoutes')
 
@@ -40,6 +41,9 @@ app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
 
 //Product-category routes  -- Restricted to Admin
 app.use("/product-category", productCategoryRouter);
+
+//Product-category routes  -- Restricted to Admin
+app.use("/product-sub-category", productSubCategoryRouter);
 
 //Product Routes    --- Restricted to Business person
 app.use("/product", productRouter);
