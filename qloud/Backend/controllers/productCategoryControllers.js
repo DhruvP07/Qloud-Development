@@ -16,7 +16,7 @@ async function handleAddProductCategory(req, res){
         }
         const category = await productCategory.create({
             name,
-            slug: slugify(name)
+            slug: slugify(name, { lower: true })
         })
         return res.status(201).json({success: true, message: "New Category added", category});
     } catch(error){

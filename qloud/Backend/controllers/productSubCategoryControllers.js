@@ -14,16 +14,19 @@ async function handleAddProductSubCategory(req, res){
         }
 
         //Checking if the sub-category already exists or not.
-        const existingSubCategory = await productSubCategory.findOne({slug: slugify(name)})
+        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+        
+
+        const existingSubCategory = await productSubCategory.findOne({slug: slugify(name).toLowerCase(), category: getProductCategory.id})
         if (existingSubCategory){
             return res.status(200).json({
                 success: true,
-                message: "Product Sub-category already exists."
+                message: `Product Sub-category already exists for ${getProductCategory.name}.`
             });
         }
-
+        console.log(existingSubCategory);
         //Getting the category of the category.
-        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+        //const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
         //Cahecking If the category esists or not
         if (!getProductCategory){
             return res.status(404).json({
@@ -36,7 +39,7 @@ async function handleAddProductSubCategory(req, res){
         //Providing the response.
         const subCategory = await productSubCategory.create({
             name,
-            slug: slugify(name),
+            slug: slugify(name, { lower: true }),
             category: getProductCategory.id
         })
         return res.status(201).json({

@@ -1,11 +1,12 @@
 const {product} = require("../models/productModel");
 const {productCategory} = require("../models/productCategoryModel");
+const {productSubCategory} = require("../models/productSubCategoryModel");
 const cloudinary = require('cloudinary').v2;
 const slugify = require("slugify");
 
 async function handleAddProduct(req, res){
     try{
-        const { name, description, price, category, quantity } = req.body
+        const { name, description, price, subCategory, quantity } = req.body
 
         switch(true){
             case !name:
@@ -14,8 +15,8 @@ async function handleAddProduct(req, res){
                 return res.status().json({success: false, message: "Description is required"})
             case !price:
                 return res.status().json({success: false, message: "Price is required"})
-            case !category:
-                return res.status().json({success: false, message: "Category is required"})
+            case !subCategory:
+                return res.status().json({success: false, message: "Sub Category is required"})
             case !quantity:
                 return res.status().json({success: false, message: "Quantity is required"})
         }
@@ -27,8 +28,9 @@ async function handleAddProduct(req, res){
         }
 
         //Getting Product Category
-        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+        const getProductSubCategory = await productSubCategory.findOne({slug:slugify(subCategory).toLowerCase()});
 
+        console.log(getProductSubCategory);
         //uploading Images to cloudinary and generating URLs
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
@@ -43,18 +45,18 @@ async function handleAddProduct(req, res){
         );
         
         //Creating a new record.
-        const newProductWithoutCategory = await product.create({
+        const newProductWithoutSubCategoryPopulated = await product.create({
             name, 
             slug: slugify(name),
             description,
             price,
-            category: getProductCategory.id,
+            category: getProductSubCategory.id,
             quantity,
             images: imageUrl
         });
 
         // Getting the same record with category populated.
-        const newProduct = await product.findById(newProductWithoutCategory._id).populate("category");
+        const newProduct = await product.findById(newProductWithoutSubCategoryPopulated._id).populate("productSubCategory");
         
         //Generating a new response.
         return res.status(201).json({
