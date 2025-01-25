@@ -73,8 +73,8 @@ async function handleUpdateProductSubCategory(req, res){
 
         //Checking if the sub-category for the given Category already exists or not.
         const existingSubCategory = await productSubCategory.findOne({category: getProductCategory.id, slug: slugify(name).toLowerCase()});
-        console.log(existingSubCategory);
-        if (existingSubCategory){
+        //console.log(existingSubCategory.id);
+        if (existingSubCategory.id !== id ){
             return res.status(200).json({
                 success: true,
                 message: `Product Sub-category already exists for ${getProductCategory.name}.`,
@@ -82,7 +82,7 @@ async function handleUpdateProductSubCategory(req, res){
             });
         }
 
-        const subCategory = await productSubCategory.findByIdAndUpdate(_id = id, {name, slug:slugify(name), category:getProductCategory.id}, { new: true });
+        const subCategory = await productSubCategory.findByIdAndUpdate(_id = id, {name, slug:slugify(name, { lower: true }), category:getProductCategory.id}, { new: true });
         return res.status(200).json({
             success: true, 
             message: "Category updated successfully", 
@@ -98,7 +98,7 @@ async function handleUpdateProductSubCategory(req, res){
     }
 }
 
-async function handleGetAllProductsCategoriesForACategory(req, res){
+async function handleGetAllProductsSubCategoriesForACategory(req, res){
     try{
         const { categoryId } = req.params;
     
@@ -112,7 +112,6 @@ async function handleGetAllProductsCategoriesForACategory(req, res){
                 message: "Category not found."
             });
         };
-        //console.log(getProductCategory.id);
 
         //Getting all the sub-categories of the category.
         const allProductSubCategories = await productSubCategory.find({category : getProductCategory.id});
@@ -177,4 +176,4 @@ async function handleDeleteProductSubCategory(req, res){
     }
 }
 
-module.exports = { handleAddProductSubCategory, handleUpdateProductSubCategory,handleGetAllProductsCategoriesForACategory, handleGetAProductSubCategory, handleDeleteProductSubCategory }
+module.exports = { handleAddProductSubCategory, handleUpdateProductSubCategory, handleGetAllProductsSubCategoriesForACategory, handleGetAProductSubCategory, handleDeleteProductSubCategory }

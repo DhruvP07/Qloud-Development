@@ -9,6 +9,7 @@ const productSubCategorySchema = new mongoose.Schema({
     slug: {
         type: String,
         Lowercase: true,
+        unique: false
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

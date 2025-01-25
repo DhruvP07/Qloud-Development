@@ -6,7 +6,7 @@ const slugify = require("slugify");
 
 async function handleAddProduct(req, res){
     try{
-        const { name, description, price, subCategory, quantity } = req.body
+        const { name, description, price, category, subCategory, quantity } = req.body
 
         switch(true){
             case !name:
@@ -15,6 +15,8 @@ async function handleAddProduct(req, res){
                 return res.status().json({success: false, message: "Description is required"})
             case !price:
                 return res.status().json({success: false, message: "Price is required"})
+            case !category:
+                return res.status().json({success: false, message: "Category is required"})
             case !subCategory:
                 return res.status().json({success: false, message: "Sub Category is required"})
             case !quantity:
@@ -22,47 +24,67 @@ async function handleAddProduct(req, res){
         }
 
         //Checking if the already exists or not.
-        const findSlug = await product.find({slug:slugify(name)}).populate("category");
+        const findSlug = await product.find({slug:slugify(name).toLowerCase()}).populate("subCategory");
         if(findSlug.length > 0){
             return res.status(200).json({success:true, message: "Product already exists"})
         }
 
-        //Getting Product Category
-        const getProductSubCategory = await productSubCategory.findOne({slug:slugify(subCategory).toLowerCase()});
+        
+        // //Getting Product Category.
+        const getProductCategory = await productCategory.findById(category);
 
-        console.log(getProductSubCategory);
+        // //Getting Product Sub Category.
+        const getProductSubCategory = await productSubCategory.findById(subCategory);
+        
+        //checking if the selected Category have the selected sub category or not.
+        if(getProductSubCategory.category.toString() !== getProductCategory.id){
+            return res.status(404).json({
+                success: false, 
+                message: "The selected Category Does not have the selected sub category."
+            })
+        }
+
         //uploading Images to cloudinary and generating URLs
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
 
         const images = [image1, image2].filter((item)=> item !== undefined);
-
+        
         let imageUrl = await Promise.all(
             images.map(async (item)=>{
                 let result = await cloudinary.uploader.upload(item.path, {resource_type: 'image'});
                 return result.secure_url;
             })
         );
-        
+
+        console.log(name);
         //Creating a new record.
         const newProductWithoutSubCategoryPopulated = await product.create({
             name, 
-            slug: slugify(name),
+            slug: slugify(name, { lower: true }),
             description,
             price,
-            category: getProductSubCategory.id,
+            category,
+            subCategory: subCategory,
             quantity,
             images: imageUrl
         });
+        console.log(newProductWithoutSubCategoryPopulated);
 
-        // Getting the same record with category populated.
-        const newProduct = await product.findById(newProductWithoutSubCategoryPopulated._id).populate("productSubCategory");
+        // // Getting the same record with category populated.
+        const populatedProduct = await product.findById(newProductWithoutSubCategoryPopulated.id).populate('subCategory'); 
+        console.log(populatedProduct); 
+
+        // This line of code populates category within subCategory.
+        if (populatedProduct.subCategory) {
+            await populatedProduct.subCategory.populate({ path: "category" });
+        }
         
         //Generating a new response.
         return res.status(201).json({
             success: true,
             message: "Product added successfully",
-            newProduct
+            populatedProduct
         })
     } catch(error){
         res.status(500).send({

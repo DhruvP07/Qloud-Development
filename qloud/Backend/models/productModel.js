@@ -19,7 +19,11 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.ObjectId,
-        ref:"ProductCategory"
+        ref:"productCategory"
+    },
+    subCategory: {
+        type: mongoose.ObjectId,
+        ref:"productSubCategory"
     },
     quantity: {
         type: Number,
