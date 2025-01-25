@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const productSubCategorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        //required: true,
+        unique: false
     },
     slug: {
         type: String,
@@ -13,7 +14,7 @@ const productSubCategorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ProductCategory'
     }
-});
+}, {timestamps:true});
 
 const productSubCategory = mongoose.model('productSubCategory', productSubCategorySchema);
 

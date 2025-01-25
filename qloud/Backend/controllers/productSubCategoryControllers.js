@@ -13,27 +13,24 @@ async function handleAddProductSubCategory(req, res){
                 return res.status(404).json({success: false, message: "Category is required"})
         }
 
-        //Checking if the sub-category already exists or not.
-        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
         
-        console.log("getProductCategory.id, ", getProductCategory.id);
+        const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
+        //Checking If the category esists or not
+        if (!getProductCategory){
+            return res.status(404).json({
+                success: false,
+                message: "Category not found."
+            });
+        }
 
+        //Checking if the sub-category for the given Category already exists or not.
         const existingSubCategory = await productSubCategory.findOne({category: getProductCategory.id, slug: slugify(name).toLowerCase()});
         console.log(existingSubCategory);
         if (existingSubCategory){
             return res.status(200).json({
                 success: true,
-                message: `Product Sub-category already exists for ${getProductCategory.name}.`
-            });
-        }
-        
-        //Getting the category of the category.
-        //const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
-        //Cahecking If the category esists or not
-        if (!getProductCategory){
-            return res.status(404).json({
-                success: false,
-                message: "Category not found."
+                message: `Product Sub-category already exists for ${getProductCategory.name}.`,
+                existingSubCategory
             });
         }
 
@@ -66,13 +63,25 @@ async function handleUpdateProductSubCategory(req, res){
 
         //Getting the category of the category.
         const getProductCategory = await productCategory.findOne({slug:slugify(category).toLowerCase()});
-        //Cahecking If the category esists or not
+        //Checking If the category esists or not
         if (!getProductCategory){
             return res.status(404).json({
                 success: false,
                 message: "Category not found."
             });
         }
+
+        //Checking if the sub-category for the given Category already exists or not.
+        const existingSubCategory = await productSubCategory.findOne({category: getProductCategory.id, slug: slugify(name).toLowerCase()});
+        console.log(existingSubCategory);
+        if (existingSubCategory){
+            return res.status(200).json({
+                success: true,
+                message: `Product Sub-category already exists for ${getProductCategory.name}.`,
+                existingSubCategory
+            });
+        }
+
         const subCategory = await productSubCategory.findByIdAndUpdate(_id = id, {name, slug:slugify(name), category:getProductCategory.id}, { new: true });
         return res.status(200).json({
             success: true, 
@@ -96,7 +105,7 @@ async function handleGetAllProductsCategoriesForACategory(req, res){
         //Getting the category of the category.
         const getProductCategory = await productCategory.findById(categoryId);
         
-        //Cahecking If the category esists or not
+        //Checking If the category esists or not
         if (!getProductCategory){
             return res.status(404).json({
                 success: false,
