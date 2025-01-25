@@ -73,7 +73,6 @@ async function handleAddProduct(req, res){
 
         // // Getting the same record with category populated.
         const populatedProduct = await product.findById(newProductWithoutSubCategoryPopulated.id).populate('subCategory'); 
-        console.log(populatedProduct); 
 
         // This line of code populates category within subCategory.
         if (populatedProduct.subCategory) {
