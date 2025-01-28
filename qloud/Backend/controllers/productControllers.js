@@ -339,7 +339,7 @@ async function handleGetAProduct(req, res){
         
         return res.status(200).json({
             success: true,
-            message: "Product",
+            message: "Product fetched successfully.",
             //category,
             newProduct
         })
@@ -349,6 +349,32 @@ async function handleGetAProduct(req, res){
             success: false,
             error,
             message: "Error while gettting the product."
+        });
+    }
+}
+
+async function handleSearchAProduct(req, res){
+    try{
+        const { keyword } = req.params;
+        const products = await product.find({
+            $or: [
+                {name:{$regex : keyword, $options:"i"}},
+                {description:{$regex : keyword, $options:"i"}}
+            ]
+        });
+
+        res.json({
+            success: true,
+            message: `result for ${keyword}`,
+            //category,
+            products
+        });
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            error,
+            message: "Error while searching for the product."
         });
     }
 }
@@ -379,4 +405,4 @@ async function handleDeleteProduct(req, res){
     }
 }
 
-module.exports = { handleAddProduct, handleUpdateProduct, handleGetAllProductsForASubCategory, handleGetAllProductsForACategory, handleGetAProduct, handleDeleteProduct }
+module.exports = { handleAddProduct, handleUpdateProduct, handleGetAllProductsForASubCategory, handleGetAllProductsForACategory, handleGetAProduct, handleSearchAProduct, handleDeleteProduct }
