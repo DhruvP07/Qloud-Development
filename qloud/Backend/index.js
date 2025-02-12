@@ -11,6 +11,7 @@ const { checkForAuthentication, restrictTo } = require('./middlewares/authentica
 
 //Routes
 const userRouter = require('./routes/usersAuthenticationRoutes');
+const businessRouter = require('./routes/businessAuthenticationRoutes');
 const productRouter = require('./routes/productRoutes');
 const productCategoryRouter = require('./routes/productCategoryRoutes');
 const productSubCategoryRouter = require('./routes/productSubCategoryRoutes');
@@ -38,6 +39,9 @@ connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb
 //User routes
 app.use('/user/auth', userRouter);
 app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
+
+//Business Routes
+app.use('/business/auth', businessRouter);
 
 //Product-category routes  -- Restricted to Admin
 app.use("/product-category", productCategoryRouter);
