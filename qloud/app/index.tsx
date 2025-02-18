@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/logo.png')} // Replace with your logo path
+        source={require('@/assets/logo.png')} // Replace with your logo path test check in
         style={styles.logo}
       />
       <Text style={styles.title}>Welcome to Qloud</Text>
