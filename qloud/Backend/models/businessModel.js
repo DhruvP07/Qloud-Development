@@ -52,6 +52,6 @@ const businessSchema = new Schema({
 // });
 
 
-const Business = model('users', businessSchema);
+const Business = model('businessperson', businessSchema);
 
 module.exports = { Business }
