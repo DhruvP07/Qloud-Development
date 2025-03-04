@@ -9,12 +9,16 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { forgotPassword } from "../../services/apiService";
-import axios, { AxiosError } from "axios";
+import { signIn, signUp } from "../../services/authService";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstname, setFirstname] = useState(""); // New state for First Name
+  const [lastname, setLastname] = useState(""); // New state for Last Name
+  const [isSignUp, setIsSignUp] = useState(false); // State to toggle between login and signup
+  const [loginError, setLoginError] = useState(false);
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -23,14 +27,44 @@ const Login = () => {
     }
 
     try {
-      console.log("Logging in with:", email, password);
+      const userData = await signIn(email, password); // Call API
+      console.log("User signed in:", userData);
+
       Alert.alert("Success", "Logged in successfully!");
-      router.replace("/Home");
+      if (userData.token) {
+        router.replace("/Home"); // Navigate to Home on successful login
+        setLoginError(false);
+      } else {
+        setLoginError(true);
+      }
     } catch (error) {
+      setLoginError(true);
       Alert.alert("Error", "Login failed!");
     }
   };
 
+  const handleSignUp = async () => {
+    setIsSignUp(true); // Toggle to show sign-up fields
+    if (isSignUp) {
+      try {
+        debugger;
+        const userData = await signUp(email, password,firstname,lastname); // Call API
+        console.log("User signed in:", userData);
+
+        Alert.alert("Success", "Logged in successfully!");
+        if (userData.token) {
+          router.replace("/Home"); // Navigate to Home on successful login
+          setLoginError(false);
+        } else {
+          setLoginError(true);
+        }
+      } catch (error) {
+        setLoginError(true);
+        Alert.alert("Error", "Login failed!");
+      }
+
+    }
+  };
 
   const handleForgotPassword = async () => {
     if (!email) {
@@ -41,8 +75,8 @@ const Login = () => {
     try {
       await forgotPassword(email);
       Alert.alert("Success", "Password reset link sent.");
-    } catch (error: any) {  // TypeScript now ensures error has a `message` property
-      Alert.alert("Error", error.message || "Failed to send reset link.");
+    } catch (error) {
+
     }
   };
 
@@ -70,6 +104,25 @@ const Login = () => {
         secureTextEntry
       />
 
+      {isSignUp && (
+        <View style={styles.signUpFields}>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstname}
+            onChangeText={setFirstname}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastname}
+            onChangeText={setLastname}
+          />
+        </View>
+      )}
+
+      {loginError && <Text style={styles.errorText}>Login Failed</Text>}
+
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot your password?</Text>
       </TouchableOpacity>
@@ -79,6 +132,13 @@ const Login = () => {
       </TouchableOpacity>
 
       <Text style={styles.orText}>or</Text>
+
+      {/* Toggle between "Create Account" and "Sign Up" */}
+      <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
+        <Text style={styles.signInButtonText}>
+          {isSignUp ? "Sign Up" : "Create Account"}
+        </Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.googleButton}>
         <Text style={styles.googleText}>Continue With Google</Text>
@@ -126,6 +186,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "black",
   },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    alignSelf: "flex-start",
+    marginBottom: 10,
+  },
   forgotPassword: {
     color: "#1E90FF",
     alignSelf: "flex-end",
@@ -171,6 +237,10 @@ const styles = StyleSheet.create({
   socialText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  signUpFields: {
+    width: "100%",
+    marginTop: 20,
   },
 });
 
