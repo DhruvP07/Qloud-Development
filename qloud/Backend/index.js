@@ -28,7 +28,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 app.use(checkForAuthentication);
 
-
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:8081',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors());
 //MongoDB Connection
 connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb.net/Qloud')
     .then(() => console.log('connected to mongoDb'))

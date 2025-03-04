@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import { router, Router, useRouter } from 'expo-router';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface SidebarProps {
   navigation: any;
@@ -9,15 +10,23 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
   navigation = useRouter();
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("userToken"); // Remove token from storage
+      router.replace("/Login"); // Redirect to Login screen
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
   return (
     <View style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <TouchableOpacity onPress={() => navigation.push('/Profile')}>
-        <Image
-          source={require("../../assets/profile-icon-9.png" )}
-          style={styles.profileImage}
-        />
+          <Image
+            source={require("../../assets/profile-icon-9.png")}
+            style={styles.profileImage}
+          />
         </TouchableOpacity>
         <Text style={styles.username}>Marwan Al Asadi</Text>
         <Text style={styles.handle}>@hisroyalfreshness</Text>
@@ -25,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
 
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
-      <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Home')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Home')}>
           <MaterialIcons name="home" size={20} color="white" />
           <Text style={styles.menuText}>Home</Text>
         </TouchableOpacity>
@@ -33,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
           <MaterialIcons name="folder" size={20} color="white" />
           <Text style={styles.menuText}>Files</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Calendar')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Login')}>
           <MaterialIcons name="calendar-today" size={20} color="white" />
           <Text style={styles.menuText}>Calendar</Text>
         </TouchableOpacity>
@@ -81,7 +90,8 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
           <Entypo name="network" size={20} color="white" />
           <Text style={styles.menuText}>Social Media</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/')}>
+        // Inside the Logout Button
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
           <Entypo name="login" size={20} color="white" />
           <Text style={styles.menuText}>Logout</Text>
         </TouchableOpacity>
