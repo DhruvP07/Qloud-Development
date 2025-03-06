@@ -19,14 +19,18 @@ const Login = () => {
   const [lastname, setLastname] = useState(""); // New state for Last Name
   const [isSignUp, setIsSignUp] = useState(false); // State to toggle between login and signup
   const [loginError, setLoginError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSignIn = async () => {
+    debugger;
+    setIsSuccess(false);
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
 
     try {
+      debugger;
       const userData = await signIn(email, password); // Call API
       console.log("User signed in:", userData);
 
@@ -43,17 +47,24 @@ const Login = () => {
     }
   };
 
+  const createAccount = async () => {
+    setIsSignUp(true);
+  }
+
   const handleSignUp = async () => {
-    setIsSignUp(true); // Toggle to show sign-up fields
+    debugger;
+    // setIsSignUp(true); // Toggle to show sign-up fields
     if (isSignUp) {
       try {
         debugger;
-        const userData = await signUp(email, password,firstname,lastname); // Call API
+        const userData = await signUp(email, password, firstname, lastname); // Call API
         console.log("User signed in:", userData);
 
         Alert.alert("Success", "Logged in successfully!");
-        if (userData.token) {
-          router.replace("/Home"); // Navigate to Home on successful login
+        if (userData.status == "success") {
+          Alert.alert("Error", "User"+firstname+" created successfully Please Login in Now");
+          setIsSignUp(false)
+          setIsSuccess(true)
           setLoginError(false);
         } else {
           setLoginError(true);
@@ -88,22 +99,6 @@ const Login = () => {
 
       <Text style={styles.label}>Enter credentials to log in</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
       {isSignUp && (
         <View style={styles.signUpFields}>
           <TextInput
@@ -121,32 +116,59 @@ const Login = () => {
         </View>
       )}
 
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      
+      {!setPassword  && <Text style={styles.errorText}>Password missing,please enter password to login</Text>}
+      {!setEmail  && <Text style={styles.errorText}> Email missing,please enter email to login</Text>}
+
       {loginError && <Text style={styles.errorText}>Login Failed</Text>}
+      {isSuccess  && <Text style={styles.successText}>User {firstname} added successfully , Please login now </Text>}
 
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPassword}>Forgot your password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+      {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
         <Text style={styles.signInButtonText}>Log In</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>}
 
-      <Text style={styles.orText}>or</Text>
+      {!isSignUp&&<Text style={styles.orText}>or</Text>}
 
       {/* Toggle between "Create Account" and "Sign Up" */}
-      <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
+      {isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
         <Text style={styles.signInButtonText}>
-          {isSignUp ? "Sign Up" : "Create Account"}
+          {"Sign Up"}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity>}
+      {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={createAccount}>
+        <Text style={styles.signInButtonText}>
+          {"Create Account"}
+        </Text>
+      </TouchableOpacity>}
 
-      <TouchableOpacity style={styles.googleButton}>
+
+      {/* <TouchableOpacity style={styles.googleButton}>
         <Text style={styles.googleText}>Continue With Google</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.facebookButton}>
         <Text style={styles.socialText}>Continue With Facebook</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -188,6 +210,12 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
+    fontSize: 14,
+    alignSelf: "flex-start",
+    marginBottom: 10,
+  },
+  successText: {
+    color: "green",
     fontSize: 14,
     alignSelf: "flex-start",
     marginBottom: 10,

@@ -12,32 +12,33 @@ export default function Index() {
     const checkAuth = async () => {
       try {
         const userToken = await AsyncStorage.getItem('userToken');
-
+  
         if (userToken) {
           // Simulate token validation
           const isValidToken = userToken === 'VALID_TOKEN'; // Replace with actual validation logic
-
+  
           if (isValidToken) {
             router.replace('/Home'); // Navigate to Home if token is valid
           } else {
             setErrorMessage('Invalid credentials. Please log in again.');
             await AsyncStorage.removeItem('userToken'); // Clear invalid token
-            router.replace('/Home');
+            router.replace('/Login'); // Redirect to login page
           }
         } else {
-          router.replace('/Home'); // No token found, go to login
+          router.replace('/Login'); // No token found, go to login
         }
       } catch (error) {
         console.error('Error checking auth:', error);
         setErrorMessage('Something went wrong. Please try again.');
-        router.replace('/Home');
+        router.replace('/Login'); // Ensure user is redirected to login in case of an error
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     checkAuth();
   }, []);
+  
 
   if (isLoading) {
     return (
