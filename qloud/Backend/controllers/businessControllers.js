@@ -121,7 +121,7 @@ async function handlebusinessPersonResetPassword(req, res) {
     return res.json({status:"success", message: "Password Updated Successfully"});
 }
 
-exports.selectBusiness = async (req, res) => {
+async function selectBusiness (req, res)  {
     try {
       const { userId, selection } = req.body;
   
@@ -143,4 +143,313 @@ exports.selectBusiness = async (req, res) => {
     }
   };
 
-module.exports = { handleBusinessPersonSignup, handleBusinessPersonSignin, handleBusinessPersonforgotPassword, handlebusinessPersonResetPassword, selectBusiness};
+  async function updateBusinessProfile  (req, res) {
+    try {
+        const { userId } = req.user; // Extract userId from authenticated user
+        const { bio, location, designation } = req.body;
+
+        const updatedBusiness = await Business.findByIdAndUpdate(
+            userId,
+            { bio, location, designation },
+            { new: true }
+        );
+
+        if (!updatedBusiness) {
+            return res.status(404).json({ status: "failure", message: "Business person not found" });
+        }
+
+        return res.status(200).json({ status: "success", message: "Profile updated successfully", businessPerson: updatedBusiness });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "failure", message: "Internal Server Error" });
+    }
+};
+
+async function updateBusinessSocialLinks (req, res){
+  try {
+      const { userId } = req.user;
+      const { instagram, linkedin, discord, telegram } = req.body;
+
+      const updatedBusiness = await Business.findByIdAndUpdate(
+          userId,
+          { 
+              socialLinks: { instagram, linkedin, discord, telegram }
+          },
+          { new: true }
+      );
+
+      if (!updatedBusiness) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Social links updated successfully", businessPerson: updatedBusiness });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+
+async function updateProfilePicture (req, res) {
+  try {
+      const { userId } = req.user;
+      const { profileImage } = req.body; // Expecting image URL
+
+      if (!profileImage) {
+          return res.status(400).json({ status: "failure", message: "Profile image URL is required" });
+      }
+
+      const updatedBusiness = await Business.findByIdAndUpdate(
+          userId,
+          { profileImage },
+          { new: true }
+      );
+
+      if (!updatedBusiness) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Profile picture updated successfully", businessPerson: updatedBusiness });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+async function updateBusinessStats (req, res)  {
+  try {
+      const { userId } = req.user;
+      const { newConnections, removeConnections, newFollowers, removeFollowers, fundsRaised } = req.body;
+
+      const updateFields = {};
+
+      // Update connections (Add new & Remove old)
+      if (newConnections?.length) {
+          updateFields.$addToSet = { connections: { $each: newConnections } };
+      }
+      if (removeConnections?.length) {
+          updateFields.$pull = { connections: { $in: removeConnections } };
+      }
+
+      // Update followers (Add new & Remove old)
+      if (newFollowers?.length) {
+          updateFields.$addToSet = { ...updateFields.$addToSet, followers: { $each: newFollowers } };
+      }
+      if (removeFollowers?.length) {
+          updateFields.$pull = { ...updateFields.$pull, followers: { $in: removeFollowers } };
+      }
+
+      // Update fundsRaised
+      if (fundsRaised) {
+          updateFields.fundsRaised = fundsRaised;
+      }
+
+      const updatedBusiness = await Business.findByIdAndUpdate(
+          userId,
+          updateFields,
+          { new: true }
+      );
+
+      if (!updatedBusiness) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ 
+          status: "success", 
+          message: "Business statistics updated successfully", 
+          businessPerson: updatedBusiness 
+      });
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+
+async function addTeamMember  (req, res)  {
+  try {
+      const { userId } = req.user;
+      const { teamMemberId } = req.body;
+
+      if (!teamMemberId) {
+          return res.status(400).json({ status: "failure", message: "Team member ID is required" });
+      }
+
+      const updatedBusiness = await Business.findByIdAndUpdate(
+          userId,
+          { $addToSet: { team: teamMemberId } }, // Ensures no duplicates
+          { new: true }
+      );
+
+      if (!updatedBusiness) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Team member added successfully", businessPerson: updatedBusiness });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+async function removeTeamMember (req, res)  {
+  try {
+      const { userId } = req.user;
+      const { teamMemberId } = req.body;
+
+      if (!teamMemberId) {
+          return res.status(400).json({ status: "failure", message: "Team member ID is required" });
+      }
+
+      const updatedBusiness = await Business.findByIdAndUpdate(
+          userId,
+          { $pull: { team: teamMemberId } }, // Removes from the array
+          { new: true }
+      );
+
+      if (!updatedBusiness) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Team member removed successfully", businessPerson: updatedBusiness });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+async function followBusinessPerson   (req, res)  {
+  try {
+      const { userId } = req.user; // Authenticated user
+      const { followId } = req.body; // ID of the person to follow
+
+      if (userId === followId) {
+          return res.status(400).json({ status: "failure", message: "You cannot follow yourself" });
+      }
+
+      // Add followId to the followers list of the target user
+      const followedPerson = await Business.findByIdAndUpdate(
+          followId,
+          { $addToSet: { followers: userId } }, // Prevent duplicates
+          { new: true }
+      );
+
+      if (!followedPerson) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Followed successfully", followedPerson });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+  async function unfollowBusinessPerson   (req, res)  {
+  try {
+      const { userId } = req.user;
+      const { followId } = req.body;
+
+      // Remove userId from the followers list of the target user
+      const updatedPerson = await Business.findByIdAndUpdate(
+          followId,
+          { $pull: { followers: userId } },
+          { new: true }
+      );
+
+      if (!updatedPerson) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", message: "Unfollowed successfully", updatedPerson });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+ async function sendConnectionRequest   (req, res) {
+  try {
+      const { userId } = req.user;
+      const { connectionId } = req.body;
+
+      if (userId === connectionId) {
+          return res.status(400).json({ status: "failure", message: "You cannot connect with yourself" });
+      }
+
+      // Check if already connected
+      const existingConnection = await Business.findOne({
+          _id: userId,
+          connections: connectionId,
+      });
+
+      if (existingConnection) {
+          return res.status(400).json({ status: "failure", message: "Already connected" });
+      }
+
+      // Add both users to each other's connections
+      await Business.findByIdAndUpdate(userId, { $addToSet: { connections: connectionId } });
+      await Business.findByIdAndUpdate(connectionId, { $addToSet: { connections: userId } });
+
+      return res.status(200).json({ status: "success", message: "Connection request sent successfully" });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+ async function removeConnection   (req, res)  {
+  try {
+      const { userId } = req.user;
+      const { connectionId } = req.body;
+
+      // Remove each user from the other's connections list
+      await Business.findByIdAndUpdate(userId, { $pull: { connections: connectionId } });
+      await Business.findByIdAndUpdate(connectionId, { $pull: { connections: userId } });
+
+      return res.status(200).json({ status: "success", message: "Connection removed successfully" });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+ async function getFollowers   (req, res)  {
+  try {
+      const { userId } = req.params;
+
+      const businessPerson = await Business.findById(userId).populate("followers", "firstName lastName email");
+
+      if (!businessPerson) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", followers: businessPerson.followers });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+ async function getConnections   (req, res)  {
+  try {
+      const { userId } = req.params;
+
+      const businessPerson = await Business.findById(userId).populate("connections", "firstName lastName email");
+
+      if (!businessPerson) {
+          return res.status(404).json({ status: "failure", message: "Business person not found" });
+      }
+
+      return res.status(200).json({ status: "success", connections: businessPerson.connections });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "failure", message: "Internal Server Error" });
+  }
+};
+
+
+  
+
+module.exports = { handleBusinessPersonSignup, handleBusinessPersonSignin, handleBusinessPersonforgotPassword, handlebusinessPersonResetPassword, selectBusiness, updateBusinessProfile, updateBusinessSocialLinks, updateProfilePicture, updateBusinessStats, addTeamMember, removeTeamMember, followBusinessPerson, unfollowBusinessPerson, sendConnectionRequest, removeConnection, getFollowers, getConnections };
