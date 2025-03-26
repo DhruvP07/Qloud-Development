@@ -33,7 +33,8 @@ async function handleUserSignup(req, res){
             firstName,
             lastName,
             email,
-            password:hashedPassword
+            password:hashedPassword,
+            role: "USER"
         });
         //console.log(result);
         return res.status(201).json({status: 'success', message: `User added successfully`})
