@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+const secret = 'QloudDevelopmentSecretKeyMartinMarvan'
+
 module.exports = {
   authenticateUser: (req, res, next) => {
     const authHeader = req.header("Authorization");
@@ -12,7 +14,7 @@ module.exports = {
     const token = authHeader.replace("Bearer ", "").trim();
 
     try {
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      const verified = jwt.verify(token, secret);
       req.user = verified;
       next();
     } catch (error) {
