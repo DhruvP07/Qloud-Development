@@ -19,7 +19,10 @@ function validateToken(token){
         //console.log("Payload", payload);
         return payload
     } catch (err) {
-        console.error("error", err.message);
+        if (err.name === "TokenExpiredError") {
+            throw new Error("Token expired. Please log in again.");
+        }
+        throw new Error("Invalid token.");
     }
 }
 
