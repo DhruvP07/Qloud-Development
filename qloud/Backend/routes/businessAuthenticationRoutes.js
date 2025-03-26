@@ -19,7 +19,7 @@ const {
     getConnections
 } = require('../controllers/businessControllers');
 
-const { authenticateUser } = require('../middlewares/authMiddleware'); // Middleware to authenticate users
+const { authenticateUser } = require('../middlewares/authentication'); // Middleware to authenticate users
 
 const router = express.Router();
 
