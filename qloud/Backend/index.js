@@ -46,7 +46,7 @@ connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb
 //Routers
 //User routes
 app.use('/user/auth', userRouter);
-app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
+app.use('/user/profile', userProfileRouter);
 
 //Business Routes
 app.use('/business/auth', businessRouter);
