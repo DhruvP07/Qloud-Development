@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const {connectMongoDb} = require('./connections');
 
 //Middlewares
-const { checkForAuthentication, restrictTo } = require('./middlewares/authentication');
+const { authenticateUser,authorizeBusiness } = require('./middlewares/authentication');
 
 //Routes
 const userRouter = require('./routes/usersAuthenticationRoutes');
@@ -16,7 +16,9 @@ const productRouter = require('./routes/productRoutes');
 const productCategoryRouter = require('./routes/productCategoryRoutes');
 const productSubCategoryRouter = require('./routes/productSubCategoryRoutes');
 const userProfileRouter = require('./routes/userProfileRoutes');
-const cartRouter = require('./routes/cartRoutes')
+const cartRouter = require('./routes/cartRoutes');
+const userSelectRouter = require('./routes/userRoutes');
+const questionRouter = require('./routes/questionRoutes');
 
 //Server
 const app = express();
@@ -26,7 +28,7 @@ PORT = 8000;
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
-app.use(checkForAuthentication);
+// app.use(checkForAuthentication);
 
 const cors = require('cors');
 app.use(cors({
@@ -48,6 +50,8 @@ app.use('/user/profile', restrictTo(['USER']), userProfileRouter);
 
 //Business Routes
 app.use('/business/auth', businessRouter);
+app.use("/business/user", userSelectRouter);
+app.use("/business/questions", questionRouter);
 
 //Product-category routes  -- Restricted to Admin
 app.use("/product-category", productCategoryRouter);
