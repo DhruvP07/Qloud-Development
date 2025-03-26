@@ -1,29 +1,34 @@
-const { validateToken } = require('../services/authentication')
+const jwt = require("jsonwebtoken");
 
-function checkForAuthentication(req,res, next){
-    const tokenCookie = req.headers.authorization?.split('Bearer ')[1];
-    //console.log('tokenCookie, auth/middleware',tokenCookie)
-    req.user = null;
-    if (!tokenCookie) return next();
+module.exports = {
+  authenticateUser: (req, res, next) => {
+    const authHeader = req.header("Authorization");
 
-    const token = tokenCookie
-    const user = validateToken(token);
-    //console.log("User", user);
-    req.user = user;
+    // Validate Authorization header
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Access Denied. No token provided." });
+    }
 
-    //console.log(req.user)
-    //console.log(req.user)
-    return next();
-}
+    const token = authHeader.replace("Bearer ", "").trim();
 
-function restrictTo(roles = []){
-    return function(req, res, next){
-        //console.log("restricted To");
-        //console.log(req.user);
-        if (!req.user) return res.json({status: 'failure', message: 'Required Login'});
-        if(!roles.includes(req.user.role)) return res.end("Unauthorized");
-        return next();
-    };    
-}
+    try {
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = verified;
+      next();
+    } catch (error) {
+      return res.status(401).json({ error: "Invalid or expired token." });
+    }
+  },
 
-module.exports = { checkForAuthentication, restrictTo }
+  authorizeBusiness: (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized. Please log in." });
+    }
+
+    if (req.user.role !== "BUSINESSPERSON") {
+      return res.status(403).json({ error: "Access restricted to Business Users only." });
+    }
+
+    next();
+  }
+};
