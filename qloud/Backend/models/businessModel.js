@@ -24,7 +24,8 @@ const businessSchema = new Schema({
         type: String,
         enum: ['USER', 'BUSINESSPERSON', 'ADMIN'],
         default: "BUSINESSPERSON"
-    }
+    },
+    selection: { type: String, enum: ["have", "need"] ,default: "need"},
 });
 
 // userSchema.pre("save", function(next){
