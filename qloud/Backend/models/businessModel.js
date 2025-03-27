@@ -42,8 +42,10 @@ const businessSchema = new Schema({
   },
 
   // Business Metrics
-  followers: [{ type: Schema.Types.ObjectId, ref: "businessperson" }], // List of users following this person
-  connections: [{ type: Schema.Types.ObjectId, ref: "businessperson" }], // Mutually connected users
+  followers: [{ type: Schema.Types.ObjectId, ref: "businessperson" }], 
+  following: [{ type: Schema.Types.ObjectId, ref: "businessperson" }],// List of users following this person
+  connections: [{ type: Schema.Types.ObjectId, ref: "businessperson" }],
+  connectionRequests: [{ type: Schema.Types.ObjectId, ref: "businessperson" }],
   fundsRaised: { type: String, default: "0" }, // Example: "3.5M", "1.2B"
 
   // Team Members
@@ -53,6 +55,14 @@ const businessSchema = new Schema({
       status: { type: String, enum: ["Pending", "Accepted"], default: "Pending" }
   }]
 }, { timestamps: true });
+
+businessSchema.virtual("noOfFollowers").get(function () {
+    return this.followers.length;
+  });
+  
+  businessSchema.virtual("noOfFollowings").get(function () {
+    return this.followings.length;
+  });
 
 
 // userSchema.pre("save", function(next){
