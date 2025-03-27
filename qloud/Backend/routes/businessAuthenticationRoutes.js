@@ -14,8 +14,12 @@ const {
     followBusinessPerson,
     unfollowBusinessPerson,
     sendConnectionRequest,
+    acceptConnectionRequest,
+    declineConnectionRequest,
+    getConnectionRequests,
     removeConnection,
     getFollowers,
+    getFollowing,
     getConnections
 } = require('../controllers/businessControllers');
 
@@ -45,9 +49,15 @@ router.post('/follow', authenticateUser, followBusinessPerson);
 router.post('/unfollow', authenticateUser, unfollowBusinessPerson);
 
 // Connection management
-router.post('/connect', authenticateUser, sendConnectionRequest);
-router.delete('/disconnect', authenticateUser, removeConnection);
-router.get('/followers/:userId', authenticateUser, getFollowers);
-router.get('/connections/:userId', authenticateUser, getConnections);
+router.post('/connect', authenticateUser, sendConnectionRequest); // Send connection request
+router.post('/accept-connection', authenticateUser, acceptConnectionRequest); // Accept connection request
+router.post('/decline-connection', authenticateUser, declineConnectionRequest); // Decline connection request
+router.get('/connection-requests', authenticateUser, getConnectionRequests); // List all connection requests
+router.delete('/disconnect', authenticateUser, removeConnection); // Remove an existing connection
+
+// Followers & Connections
+router.get('/followers', authenticateUser, getFollowers);
+router.get('/followings', authenticateUser, getFollowing);
+router.get('/connections', authenticateUser, getConnections);
 
 module.exports = router;
