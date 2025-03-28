@@ -18,19 +18,19 @@ export default function Index() {
           const isValidToken = userToken === 'VALID_TOKEN'; // Replace with actual validation logic
   
           if (isValidToken) {
-            router.replace('/Home'); // Navigate to Home if token is valid
+            router.replace('/drawer/(tabs)/Home'); // Navigate to Home if token is valid
           } else {
             setErrorMessage('Invalid credentials. Please log in again.');
             await AsyncStorage.removeItem('userToken'); // Clear invalid token
-            router.replace('/Login'); // Redirect to login page
+            router.replace('/drawer/(screens)/Login'); // Redirect to login page
           }
         } else {
-          router.replace('/Login'); // No token found, go to login
+          router.replace('/drawer/(screens)/Login'); // No token found, go to login
         }
       } catch (error) {
         console.error('Error checking auth:', error);
         setErrorMessage('Something went wrong. Please try again.');
-        router.replace('/Login'); // Ensure user is redirected to login in case of an error
+        router.replace('/drawer/(screens)/Login'); // Ensure user is redirected to login in case of an error
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +57,7 @@ export default function Index() {
       {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
       <TouchableOpacity style={styles.ctaButton}>
-        <Link href={'/Home'} style={styles.ctaText}>Learn More</Link>
+        <Link href={'/drawer/(tabs)/Home'} style={styles.ctaText}>Learn More</Link>
       </TouchableOpacity>
     </View>
   );
@@ -106,12 +106,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 4,
-  },
+    boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)', // Equivalent to shadow styles
+  }
+  ,
   ctaText: {
     fontSize: 16,
     color: '#fff',

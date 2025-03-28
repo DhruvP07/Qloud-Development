@@ -24,10 +24,19 @@ const Login = () => {
   const handleSignIn = async () => {
     debugger;
     setIsSuccess(false);
+
+    const mockUser = {
+      email: "testuser@example.com",
+      password: "TestPassword123",
+      token: "mockToken123456", 
+    };
+
     if (!email || !password) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
+
+    
 
     try {
       debugger;
@@ -36,7 +45,7 @@ const Login = () => {
 
       Alert.alert("Success", "Logged in successfully!");
       if (userData.token) {
-        router.replace("/Home"); // Navigate to Home on successful login
+        router.replace("/drawer/(tabs)/Home"); // Navigate to Home on successful login
         setLoginError(false);
       } else {
         setLoginError(true);

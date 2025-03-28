@@ -12,7 +12,7 @@ const Home = () =>  {
       <Text style={styles.subtitle}>Empowering your business through innovation and technology.</Text>
 
       <TouchableOpacity style={styles.ctaButton}>
-        <Link href={'/Home'} style={styles.ctaText}>
+        <Link href={'/drawer/(tabs)/Home'} style={styles.ctaText}>
           Learn More
         </Link>
       </TouchableOpacity>

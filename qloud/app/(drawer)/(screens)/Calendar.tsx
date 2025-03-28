@@ -1,120 +1,40 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-} from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
-const daysInMonth = Array.from({ length: 30 }, (_, i) => ({
-  day: i + 1,
-  marker: null as string | null,
-  text: "",
-}));
-
-const Calendar = () => {
-  const [calendarData, setCalendarData] = useState<Array<{
-    day: number;
-    marker: string | null;
-    text: string;
-  }>>(daysInMonth);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [markerType, setMarkerType] = useState<string>(""); // "circle", "X", "$"
-  const [customText, setCustomText] = useState<string>("");
-
-  const handleDayPress = (day: number) => {
-    setSelectedDay(day);
-  };
-
-  const handleAddMarker = () => {
-    if (selectedDay === null) {
-      Alert.alert("Error", "Please select a day to mark.");
-      return;
-    }
-
-    setCalendarData((prevData) =>
-      prevData.map((item) =>
-        item.day === selectedDay
-          ? { ...item, marker: markerType, text: customText }
-          : item
-      )
-    );
-
-    // Reset inputs
-    setSelectedDay(null);
-    setMarkerType("");
-    setCustomText("");
-  };
-
-  const renderDay = ({ item }: { item: { day: number; marker: string | null; text: string } }) => (
-    <TouchableOpacity
-      style={[styles.dayContainer, selectedDay === item.day && styles.selectedDay]}
-      onPress={() => handleDayPress(item.day)}
-    >
-      <Text style={styles.dayText}>{item.day}</Text>
-      {item.marker === "$" && (
-        <View style={styles.markerContainer}>
-          <Text style={styles.dollarMarker}>$</Text>
-        </View>
-      )}
-      {item.marker === "circle" && (
-        <View style={styles.circleMarker}>
-          <Text></Text>
-        </View>
-      )}
-      {item.marker === "X" && (
-        <Text style={styles.xMarker}>X</Text>
-      )}
-      {item.text !== "" && <Text style={styles.textMarker}>{item.text}</Text>}
-    </TouchableOpacity>
-  );
-
+const Contact = () => {
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>Qloud Calendar</Text>
+      <Text style={styles.title}>Contact Us</Text>
 
-      {/* Input Section */}
-      <View style={styles.inputSection}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter marker type (circle, X, $)"
-          placeholderTextColor="black" // Set placeholder color to black
-          value={markerType}
-          onChangeText={setMarkerType}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter custom text"
-          placeholderTextColor="black" // Set placeholder color to black
-          value={customText}
-          onChangeText={setCustomText}
-        />
-        <TouchableOpacity style={styles.addButton} onPress={handleAddMarker}>
-          <Text style={styles.addButtonText}>Add Marker</Text>
-        </TouchableOpacity>
+      {/* Contact Credentials */}
+      <View style={styles.credentials}>
+        <Text style={styles.credentialText}>📍 Address: 123 Main Street, London, UK</Text>
+        <Text style={styles.credentialText}>📧 Email: support@qloud.com</Text>
+        <Text style={styles.credentialText}>📞 Phone: +44 123 456 7890</Text>
       </View>
 
-      {/* Days of the Week */}
-      <View style={styles.weekContainer}>
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <Text key={day} style={styles.weekText}>
-            {day}
-          </Text>
-        ))}
-      </View>
-
-      {/* Calendar Days */}
-      <FlatList
-        data={calendarData}
-        renderItem={renderDay}
-        keyExtractor={(item) => item.day.toString()}
-        numColumns={7}
-        contentContainerStyle={styles.calendarContainer}
+      {/* Input Fields */}
+      <TextInput
+        style={styles.input}
+        placeholder="Your Name"
+        placeholderTextColor="#aaa"
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Your Email"
+        placeholderTextColor="#aaa"
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Your Message"
+        placeholderTextColor="#aaa"
+        multiline
+      />
+
+      {/* Submit Button */}
+      <TouchableOpacity style={styles.submitButton}>
+        <Text style={styles.submitButtonText}>Send</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -122,107 +42,59 @@ const Calendar = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#fff",
+    padding: 20,
+    justifyContent: "center",
   },
-  header: {
+  title: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#000",
+    marginBottom: 20,
     textAlign: "center",
-    marginBottom: 20,
   },
-  inputSection: {
+  credentials: {
     marginBottom: 20,
+    alignItems: "center",
+  },
+  credentialText: {
+    fontSize: 16,
+    color: "#000",
+    marginVertical: 5,
+    fontWeight: 'bold'
   },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
-    color: "black",
     borderRadius: 8,
     padding: 10,
+    color: "#000",
+    fontSize: 16,
     marginBottom: 10,
+    backgroundColor: "#f9f9f9",
   },
-  addButton: {
-    backgroundColor: "black",
-    paddingVertical: 10,
+  textArea: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 10,
+    color: "#000",
+    fontSize: 16,
+    height: 120,
+    marginBottom: 20,
+    backgroundColor: "#f9f9f9",
+  },
+  submitButton: {
+    backgroundColor: "#000",
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  addButtonText: {
+  submitButtonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  weekContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 10,
-  },
-  weekText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-    textAlign: "center",
-    flex: 1,
-  },
-  calendarContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dayContainer: {
-    width: 50,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    margin: 2, // Add margin to create space between the boxes
-    position: "relative",
-    backgroundColor: "#fff", // Ensure proper background
-  },
-  selectedDay: {
-    backgroundColor: "#e0e0e0",
-  },
-  dayText: {
-    fontSize: 16,
-    textAlign: "center",
-  },
-  markerContainer: {
-    position: "absolute",
-    bottom: 10, // Adjusted for better placement
-    backgroundColor: "#000",
-    borderRadius: 15,
-    width: 25,
-    height: 25,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dollarMarker: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  circleMarker: {
-    position: "absolute",
-    bottom: 10, // Adjusted for better placement
-    borderWidth: 2,
-    borderColor: "red",
-    borderRadius: 15,
-    width: 25,
-    height: 25,
-  },
-  xMarker: {
-    position: "absolute",
-    bottom: 10, // Adjusted for better placement
-    color: "red",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  textMarker: {
-    position: "absolute",
-    bottom: -5, // Adjusted to align better with text
-    fontSize: 12,
-    color: "blue",
-    textAlign: "center",
   },
 });
 
-export default Calendar;
+export default Contact;
