@@ -1,45 +1,41 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { StackNavigationProp } from '@react-navigation/stack';
 
-interface TeamType {
-  id: string;
-  name: string;
-  members: number;
-  image: string;
+// Define the type for the stack navigator
+type RootStackParamList = {
+  Home: undefined;
+  CreateCommunity: undefined;
+  CalorieAIScreen: undefined; // Add screen here
+  TechBrosScreen: undefined;  // Add screen here
+  TeamDetails: { teamId: string };
+};
+
+
+// Define the type for the `navigation` prop in the `Team` screen
+type TeamScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
+
+interface TeamProps {
+  navigation: TeamScreenNavigationProp;
 }
 
 const categories = ["Tech", "Finance", "E-Commerce", "Fashion"];
 const trendingTeams = [
-  { id: "1", name: "Calorie.AI", members: 12, image: "https://via.placeholder.com/150" },
-  { id: "2", name: "Tech Bro's", members: 18, image: "https://via.placeholder.com/150" },
+  { id: "1", name: "Calorie.AI", members: 12, image: require("../../../assets/connections.png"), link: "CalorieAIScreen" },
+  { id: "2", name: "Tech Bro's", members: 18, image: require("../../../assets/connections.png"), link: "TechBrosScreen" },
 ];
 
-const Team = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedTeam, setSelectedTeam] = useState<TeamType | null>(null);
-  const [tasks, setTasks] = useState([
-    { id: "1", task: "Meeting", inCharge: "Alissa", status: "Pending" },
-    { id: "2", task: "Marketing", inCharge: "Martin", status: "Done" },
-    { id: "3", task: "Paperwork", inCharge: "Alissa", status: "In Progress" },
-  ]);
+
+const Team: React.FC<TeamProps> = ({ navigation }) => {
   const [newTeamName, setNewTeamName] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [newTeamImage, setNewTeamImage] = useState("");
 
-  const handleJoinTeam = (team: TeamType) => {
-    setSelectedTeam(team);
-    setCurrentStep(3);
-  };
+const handleJoinTeam = (link: keyof RootStackParamList) => {
+  navigation.navigate(link); // This will now be type-safe
+};
+
 
   const handleCreateTeam = () => {
     if (!newTeamName || !newCategory || !newTeamImage) {
@@ -50,116 +46,47 @@ const Team = () => {
     setNewTeamName("");
     setNewCategory("");
     setNewTeamImage("");
-    setCurrentStep(1);
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <View style={styles.joinTeam}>
-            <Text style={styles.title}>JOIN TEAM</Text>
-            <FlatList
-              data={categories}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <Text style={styles.category}>{item}</Text>
-              )}
-              numColumns={2}
-              contentContainerStyle={styles.categoryContainer}
-            />
-            <Text style={styles.subtitle}>TRENDING</Text>
-            <FlatList
-              data={trendingTeams}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.teamCard}
-                  onPress={() => handleJoinTeam(item)}
-                >
-                  <Image
-                    source={{ uri: item.image }}
-                    style={styles.teamImage}
-                  />
-                  <Text style={styles.teamName}>{item.name}</Text>
-                  <Text style={styles.teamMembers}>
-                    {item.members} members
-                  </Text>
-                </TouchableOpacity>
-              )}
-              horizontal
-              contentContainerStyle={styles.teamList}
-            />
-          </View>
-        );
-      case 2:
-        return (
-          <View style={styles.createTeam}>
-            <Text style={styles.title}>Create Community</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Team Name"
-              placeholderTextColor="#aaa"
-              value={newTeamName}
-              onChangeText={setNewTeamName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Category"
-              placeholderTextColor="#aaa"
-              value={newCategory}
-              onChangeText={setNewCategory}
-            />
-            <TouchableOpacity
-              style={styles.uploadButton}
-              onPress={() => setNewTeamImage("https://via.placeholder.com/150")}
-            >
-              <Text style={styles.uploadButtonText}>Upload Image</Text>
-            </TouchableOpacity>
-            {newTeamImage ? (
-              <Image
-                source={{ uri: newTeamImage }}
-                style={styles.uploadedImage}
-              />
-            ) : null}
-            <TouchableOpacity style={styles.createButton} onPress={handleCreateTeam}>
-              <Text style={styles.createButtonText}>Create</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      case 3:
-        return (
-          <View style={styles.manageTeam}>
-            {selectedTeam && (
-              <>
-                <Text style={styles.title}>{selectedTeam.name}</Text>
-                <FlatList
-                  data={tasks}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    <View style={styles.taskRow}>
-                      <Text style={styles.taskText}>{item.task}</Text>
-                      <Text style={styles.taskText}>{item.inCharge}</Text>
-                      <Text style={styles.taskStatus}>{item.status}</Text>
-                    </View>
-                  )}
-                />
-                <TouchableOpacity style={styles.addTaskButton}>
-                  <Text style={styles.addTaskButtonText}>Add Task</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.backButton} onPress={() => setCurrentStep(1)}>
-                  <Text style={styles.backButtonText}>Back to Join</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        );
-      default:
-        return null;
-    }
-  };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>JOIN TEAM</Text>
 
-  return <View style={styles.container}>{renderStep()}</View>;
+      {/* Categories */}
+      <View style={styles.categoryContainer}>
+        {categories.map((category) => (
+          <TouchableOpacity key={category} style={styles.category}>
+            <Text style={styles.categoryText}>{category}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.subtitle}>TRENDING</Text>
+
+      {/* Trending Teams */}
+      <View style={styles.teamList}>
+        {trendingTeams.map((team) => (
+          <TouchableOpacity
+            key={team.id}
+            style={styles.teamCard}
+            onPress={() => handleJoinTeam(team.link)} // Pass the ID instead of name
+          >
+            <Image source={team.image} style={styles.teamImage} />
+            <Text style={styles.teamName}>{team.name}</Text>
+            <Text style={styles.teamMembers}>{team.members} members</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Create Community Button */}
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => navigation.navigate("CreateCommunity")}
+      >
+        <Text style={styles.createButtonText}>Create Community</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -181,17 +108,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginVertical: 10,
   },
-  joinTeam: {
-    flex: 1,
-  },
   categoryContainer: {
     marginBottom: 20,
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap", // Ensure categories wrap to the next line
   },
   category: {
-    fontSize: 16,
-    color: "#fff",
     margin: 8,
     paddingHorizontal: 15,
     paddingVertical: 8,
@@ -199,6 +123,10 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     borderRadius: 8,
     textAlign: "center",
+  },
+  categoryText: {
+    fontSize: 16,
+    color: "#fff",
   },
   teamList: {
     paddingTop: 10,
@@ -227,84 +155,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#aaa",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#fff",
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    color: "#fff",
-    marginBottom: 10,
-  },
-  uploadButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  uploadButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  uploadedImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
   createButton: {
     backgroundColor: "#28a745",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginTop: 20,
   },
   createButtonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  manageTeam: {
-    flex: 1,
-  },
-  taskRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#444",
-  },
-  taskText: {
-    fontSize: 16,
-    color: "#fff",
-  },
-  taskStatus: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#00FF00",
-  },
-  addTaskButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  addTaskButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  backButton: {
-    backgroundColor: "#444",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  createTeam: {
-    flex: 1,
   },
 });
 
