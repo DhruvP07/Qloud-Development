@@ -19,21 +19,44 @@ const app = express();
 const PORT = process.env.PORT || 8001; // Default to 8001 if the PORT is not defined
 const MONGO_URI = process.env.MONGO_URI; // MongoDB URI
 
+const mockUser = {
+  email: "testuser@example.com",
+  password: "TestPassword123",
+  token: "mockToken123456",
+};
+
+// CORS middleware should be applied before defining routes
+app.use(cors({
+  origin: 'http://localhost:8081',  // Update this to match the origin of your React Native app
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(cors({
-    origin: 'http://localhost:8081',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Sign-in route
+app.post('/user/auth/signin', (req, res) => {
+  const { email, password } = req.body;
+
+  if (email === mockUser.email && password === mockUser.password) {
+    return res.json({
+      status: 'success',
+      token: mockUser.token,
+    });
+  }
+
+  return res.json({
+    status: 'failure',
+    message: 'User does not exist',
+  });
+});
 
 // MongoDB Connection
-connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb.net/Qloud')
-    .then(() => console.log('connected to mongoDb'))
-    .catch((err) => console.log('Error connecting to MongoDB', err));
+connectMongoDb(MONGO_URI)
+  .then(() => console.log('connected to MongoDb'))
+  .catch((err) => console.log('Error connecting to MongoDB', err));
 
 // Routers
 app.use('/user/auth', userRouter);
@@ -48,5 +71,5 @@ app.use('/cart', cartRouter);
 
 // Server
 app.listen(PORT, () => {
-    console.log(`Server started at port ${PORT}`);
+  console.log(`Server started at port ${PORT}`);
 });
