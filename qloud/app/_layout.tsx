@@ -22,6 +22,7 @@ const Layout: React.FC = () => {
           }}
         />
         <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        
       </Stack>
     </View>
   );

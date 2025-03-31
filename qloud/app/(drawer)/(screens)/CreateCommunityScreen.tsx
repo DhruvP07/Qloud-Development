@@ -8,12 +8,33 @@ import {
   FlatList,
   Image,
   Alert,
-  Linking
+  Linking,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import { Modal } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
+
+interface SocialLinksState {
+  instagram: string;
+  linkedin: string;
+  discord: string;
+  xcom: string;
+}
+
+interface ActiveLinksState {
+  [key: string]: boolean;
+}
+
+interface CommunityMessage {
+  id: string;
+  profileImage: string;
+  communityName: string;
+}
 
 const CreateCommunityScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [files, setFiles] = useState<
     { id: string; uri: string; name: string }[]
   >([]);
@@ -22,12 +43,89 @@ const CreateCommunityScreen: React.FC = () => {
   >([]);
   const [communityName, setCommunityName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [socialLinks, setSocialLinks] = useState({
+  const [socialLinks, setSocialLinks] = useState<SocialLinksState>({
     instagram: "",
     linkedin: "",
     discord: "",
     xcom: "",
   });
+
+  const [activeLinks, setActiveLinks] = useState<ActiveLinksState>({});
+  const [messages, setMessages] = useState<CommunityMessage[]>([]);
+
+  const toggleLink = (platform: string) => {
+    setActiveLinks((prev) => ({
+      ...prev,
+      [platform]: !prev[platform],
+    }));
+  };
+
+  const handleSocialSignIn = async (platform: string) => {
+    let url = "";
+    switch (platform) {
+      case "instagram":
+        url = "https://www.instagram.com/accounts/login/";
+        break;
+      case "linkedin":
+        url = "https://www.linkedin.com/login";
+        break;
+      case "discord":
+        url = "https://discord.com/login";
+        break;
+      case "xcom":
+        url = "https://twitter.com/login";
+        break;
+    }
+    try {
+      await Linking.openURL(url);
+      setActiveLinks((prev) => ({ ...prev, [platform]: true }));
+      Alert.alert(`${platform} connected successfully!`);
+    } catch (error) {
+      Alert.alert("Failed to open link");
+    }
+  };
+
+  const handleSend = () => {
+    console.log("Sending message with community name:", communityName);
+
+    const newMessage = {
+      id: Date.now().toString(),
+      profileImage: images[0]?.uri || "",
+      communityName: communityName || "Community",
+    };
+    setMessages((prev) => [...prev, newMessage]);
+
+    // Navigate and pass params
+    router.push({
+      pathname: "/(drawer)/(screens)/CommunityMessage",
+      params: {
+        communityName,
+        profileImage: images[0]?.uri || "",
+      },
+    });
+  };
+
+  const handleLinkPresses = (platform: keyof SocialLinksState) => {
+    const url = socialLinks[platform];
+    if (url) {
+      console.log(`Opening ${url}`);
+    }
+  };
+
+  const handleSave = () => {
+    Alert.alert("Community Saved!");
+  };
+
+  const renderIcon = (platform: keyof SocialLinksState, iconName: string) => (
+    <TouchableOpacity onPress={() => handleSocialSignIn(platform)}>
+      <Ionicons
+        name={iconName}
+        size={32}
+        color={activeLinks[platform] ? "#000" : "#ccc"}
+      />
+    </TouchableOpacity>
+  );
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedScreen, setSelectedScreen] = useState("CreateCommunityScreen"); // Track the current screen
 
@@ -130,33 +228,40 @@ const CreateCommunityScreen: React.FC = () => {
       if (!result.canceled) {
         const { assets } = result;
         if (assets && assets[0]) {
-          // Handle the profile image upload (just an example here)
-          Alert.alert(
-            "Profile Image Uploaded",
-            `Profile image: ${assets[0].name}`
-          );
+          const newImage = {
+            id: images.length.toString(),
+            uri: assets[0].uri,
+            name: assets[0].name,
+          };
+          setImages((prevImages) => [...prevImages, newImage]); // Add image to state
         }
       }
     } catch (error) {
-      Alert.alert("Error", "Could not upload the profile image.");
+      Alert.alert("Error", "Could not upload the image.");
     }
   };
 
   const handleLinkPress = (url: string) => {
-    Linking.openURL(url).catch((err) => console.error("Error opening URL: ", err));
+    Linking.openURL(url).catch((err) =>
+      console.error("Error opening URL: ", err)
+    );
   };
 
-  const groupImagesIntoRows = (images: { id: string; uri: string; name: string }[], rows: number) => {
+  const groupImagesIntoRows = (
+    images: { id: string; uri: string; name: string }[],
+    rows: number
+  ) => {
     const grouped: { id: string; uri: string; name: string }[][] = [];
-    
+
     for (let i = 0; i < images.length; i += rows) {
       grouped.push(images.slice(i, i + rows));
     }
-    
+
     return grouped;
   };
 
-  const groupedImages = groupImagesIntoRows(images, 2); 
+  const groupedImages = groupImagesIntoRows(images, 2);
+
   if (selectedScreen === "CreateCommunityScreen") {
     return (
       <View style={styles.container}>
@@ -180,17 +285,21 @@ const CreateCommunityScreen: React.FC = () => {
 
         {/* Render Uploaded Images */}
         <FlatList
-    data={groupedImages}
-    keyExtractor={(item, index) => index.toString()} // You can change this to something unique in your data
-    renderItem={({ item }) => (
-      <View style={styles.rowContainer}>
-        {item.map((image) => (
-          <Image key={image.id} source={{ uri: image.uri }} style={styles.fileImage} />
-        ))}
-      </View>
-    )}
-    contentContainerStyle={styles.fileGrid}
-  />
+          data={groupedImages}
+          keyExtractor={(item, index) => index.toString()} // You can change this to something unique in your data
+          renderItem={({ item }) => (
+            <View style={styles.rowContainer}>
+              {item.map((image) => (
+                <Image
+                  key={image.id}
+                  source={{ uri: image.uri }}
+                  style={styles.fileImage}
+                />
+              ))}
+            </View>
+          )}
+          contentContainerStyle={styles.fileGrid}
+        />
 
         {/* Community Name Input */}
         <TextInput
@@ -199,7 +308,6 @@ const CreateCommunityScreen: React.FC = () => {
           value={communityName}
           onChangeText={setCommunityName}
         />
-
         {/* Category Selector */}
         <Text style={styles.label}>Select Category:</Text>
         <TouchableOpacity
@@ -243,38 +351,12 @@ const CreateCommunityScreen: React.FC = () => {
         </Modal>
 
         {/* Social Links */}
-        <TextInput
-          style={styles.input}
-          placeholder="Instagram Link"
-          value={socialLinks.instagram}
-          onChangeText={(text) =>
-            setSocialLinks({ ...socialLinks, instagram: text })
-          }
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="LinkedIn Link"
-          value={socialLinks.linkedin}
-          onChangeText={(text) =>
-            setSocialLinks({ ...socialLinks, linkedin: text })
-          }
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Discord Link"
-          value={socialLinks.discord}
-          onChangeText={(text) =>
-            setSocialLinks({ ...socialLinks, discord: text })
-          }
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="X.com Link"
-          value={socialLinks.xcom}
-          onChangeText={(text) =>
-            setSocialLinks({ ...socialLinks, xcom: text })
-          }
-        />
+        <View style={styles.iconContainer}>
+          {renderIcon("instagram", "logo-instagram")}
+          {renderIcon("linkedin", "logo-linkedin")}
+          {renderIcon("discord", "logo-discord")}
+          {renderIcon("xcom", "logo-twitter")}
+        </View>
 
         {/* Submit Button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -285,46 +367,58 @@ const CreateCommunityScreen: React.FC = () => {
   } else if (selectedScreen === "SubmissionScreen") {
     return (
       <View style={styles.containers}>
-      {/* Render Images vertically */}
-      <FlatList
-        data={images}
-        keyExtractor={(item) => item.id}
-        renderItem={renderFile}
-      />
+        {/* Render Images vertically */}
+        <FlatList
+          data={images}
+          keyExtractor={(item) => item.id}
+          renderItem={renderFile}
+        />
 
-      <Text style={styles.submittedText}>
-        Community Name: {communityName}
-      </Text>
-      <Text style={styles.submittedText}>
-        Category: {selectedCategory}
-      </Text>
+        <Text style={styles.submittedText}>
+          Community Name: {communityName}
+        </Text>
+        <Text style={styles.submittedText}>Category: {selectedCategory}</Text>
 
-      <Text style={styles.socialLinksText}>Social Links:</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
 
-      <View>
-        {selsocialLinks && selsocialLinks.length > 0 ? (
-          selsocialLinks.map((link, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleLinkPress(link)}
-              
-            >
-              <Text>{link}</Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>No social links available</Text>
-        )}
+          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+            <Text style={styles.buttonText}>Send</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.socialLinksText}>Social Links:</Text>
+
+        <View>
+          <FlatList
+            data={Object.keys(activeLinks).filter(
+              (platform) => activeLinks[platform]
+            )}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <View>
+                <Ionicons
+                  name={
+                    item === "instagram"
+                      ? "logo-instagram"
+                      : item === "linkedin"
+                      ? "logo-linkedin"
+                      : item === "discord"
+                      ? "logo-discord"
+                      : "logo-twitter"
+                  }
+                  size={32}
+                  color="#000"
+                />
+              </View>
+            )}
+          />
+        </View>
       </View>
-
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
-    </View>
     );
   }
-
-  return null;
 };
 
 const styles = StyleSheet.create({
@@ -364,8 +458,8 @@ const styles = StyleSheet.create({
   },
   fileGrid: {
     justifyContent: "center",
-    flex:1,
-    flexDirection: 'column'
+    flex: 1,
+    flexDirection: "column",
   },
   fileContainer: {
     flex: 1,
@@ -399,9 +493,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rowContainer: {
-    flexDirection: "column", 
-    justifyContent: "center", 
-
+    flexDirection: "column",
+    justifyContent: "center",
   },
   submitButtonText: {
     color: "white",
@@ -505,6 +598,48 @@ const styles = StyleSheet.create({
   },
   socialLinkText: {
     color: "#fff",
+    fontSize: 16,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  saveButton: {
+    backgroundColor: "#ccc",
+    padding: 10,
+    borderRadius: 8,
+  },
+  sendButton: {
+    backgroundColor: "#000",
+    padding: 10,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: "#fff",
+  },
+  messageTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  messageItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  messageText: {
     fontSize: 16,
   },
 });
