@@ -36,7 +36,7 @@ const Team: React.FC = () => {
 
   if (selectedScreen === "TechBrosScreen") {
     return (
-      <View style={styles.container}>
+      <View style={styles.containerTech}>
         <TechBrosScreen />
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <Text style={styles.backButtonText}>Back</Text>
@@ -47,7 +47,7 @@ const Team: React.FC = () => {
 
   if (selectedScreen === "CreateCommunityScreen") {
     return (
-      <View style={styles.container}>
+      <View style={styles.containerTech}>
         <CreateCommunityScreen />
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <Text style={styles.backButtonText}>Back</Text>
@@ -98,6 +98,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+    padding: 20,
+  },
+  containerTech : {
+    flex: 1,
+   
     padding: 20,
   },
   title: {
