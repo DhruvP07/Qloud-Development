@@ -1,24 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-// Define the type for the stack navigator
-type RootStackParamList = {
-  Home: undefined;
-  CreateCommunity: undefined;
-  CalorieAIScreen: undefined; // Add screen here
-  TechBrosScreen: undefined;  // Add screen here
-  TeamDetails: { teamId: string };
-};
-
-
-// Define the type for the `navigation` prop in the `Team` screen
-type TeamScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
-
-interface TeamProps {
-  navigation: TeamScreenNavigationProp;
-}
+// Import the screens
+import CalorieAIScreen from "./CalorieAIScreen";
+import TechBrosScreen from "./TechBrosScreen";
+import CreateCommunityScreen from "./CreateCommunityScreen";
 
 const categories = ["Tech", "Finance", "E-Commerce", "Fashion"];
 const trendingTeams = [
@@ -26,27 +12,49 @@ const trendingTeams = [
   { id: "2", name: "Tech Bro's", members: 18, image: require("../../../assets/connections.png"), link: "TechBrosScreen" },
 ];
 
+const Team: React.FC = () => {
+  const [selectedScreen, setSelectedScreen] = useState<string | null>(null);
 
-const Team: React.FC<TeamProps> = ({ navigation }) => {
-  const [newTeamName, setNewTeamName] = useState("");
-  const [newCategory, setNewCategory] = useState("");
-  const [newTeamImage, setNewTeamImage] = useState("");
-
-const handleJoinTeam = (link: keyof RootStackParamList) => {
-  navigation.navigate(link); // This will now be type-safe
-};
-
-
-  const handleCreateTeam = () => {
-    if (!newTeamName || !newCategory || !newTeamImage) {
-      Alert.alert("Error", "Please fill all the fields to create a team.");
-      return;
-    }
-    Alert.alert("Success", `Community '${newTeamName}' created successfully!`);
-    setNewTeamName("");
-    setNewCategory("");
-    setNewTeamImage("");
+  const handleNavigate = (screen: string) => {
+    setSelectedScreen(screen);
   };
+
+  const handleBack = () => {
+    setSelectedScreen(null);
+  };
+
+  if (selectedScreen === "CalorieAIScreen") {
+    return (
+      <View style={styles.container}>
+        <CalorieAIScreen />
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (selectedScreen === "TechBrosScreen") {
+    return (
+      <View style={styles.container}>
+        <TechBrosScreen />
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (selectedScreen === "CreateCommunityScreen") {
+    return (
+      <View style={styles.container}>
+        <CreateCommunityScreen />
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -69,7 +77,7 @@ const handleJoinTeam = (link: keyof RootStackParamList) => {
           <TouchableOpacity
             key={team.id}
             style={styles.teamCard}
-            onPress={() => handleJoinTeam(team.link)} // Pass the ID instead of name
+            onPress={() => handleNavigate(team.link)}
           >
             <Image source={team.image} style={styles.teamImage} />
             <Text style={styles.teamName}>{team.name}</Text>
@@ -79,11 +87,8 @@ const handleJoinTeam = (link: keyof RootStackParamList) => {
       </View>
 
       {/* Create Community Button */}
-      <TouchableOpacity
-        style={styles.createButton}
-        onPress={() => navigation.navigate("CreateCommunity")}
-      >
-        <Text style={styles.createButtonText}>Create Community</Text>
+      <TouchableOpacity style={styles.createButton} onPress={() => handleNavigate("CreateCommunityScreen")}>
+        <Text style={styles.createButtonText}>+ Create a Community</Text>
       </TouchableOpacity>
     </View>
   );
@@ -110,10 +115,9 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     marginBottom: 20,
-    justifyContent: "center",
-    alignItems: "center",
     flexDirection: "row",
-    flexWrap: "wrap", // Ensure categories wrap to the next line
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   category: {
     margin: 8,
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#fff",
     borderRadius: 8,
-    textAlign: "center",
   },
   categoryText: {
     fontSize: 16,
@@ -156,13 +159,24 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
   createButton: {
-    backgroundColor: "#28a745",
-    paddingVertical: 12,
+    marginTop: 20,
+    backgroundColor: "#007bff",
+    padding: 15,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 20,
   },
   createButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  backButton: {
+    marginTop: 20,
+    backgroundColor: "#ff4444",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  backButtonText: {
     color: "#fff",
     fontWeight: "bold",
   },
