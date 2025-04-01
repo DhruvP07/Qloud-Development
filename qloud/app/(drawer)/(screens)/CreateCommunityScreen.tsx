@@ -38,9 +38,7 @@ const CreateCommunityScreen: React.FC = () => {
   const [files, setFiles] = useState<
     { id: string; uri: string; name: string }[]
   >([]);
-  const [images, setImages] = useState<
-    { id: string; uri: string; name: string }[]
-  >([]);
+
   const [communityName, setCommunityName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinksState>({
@@ -190,14 +188,30 @@ const CreateCommunityScreen: React.FC = () => {
   }) => (
     <View style={styles.fileContainer}>
       <Image source={{ uri: item.uri }} style={styles.fileImage} />
-      {/* <Text style={styles.fileName}>{item.name}</Text> */}
     </View>
   );
+
+  const renderFilea = ({
+    item,
+  }: {
+    item: { id: string; uri: string; name: string };
+  }) => (
+    <View style={styles.fileContainer}>
+      <Image source={{ uri: item.uri }} style={styles.fileImageq} />
+    </View>
+  );
+
+  const [images, setImages] = useState<
+    { id: string; uri: string; name: string }[]
+  >([]);
+  const [profileImages, setProfileImages] = useState<
+    { id: string; uri: string; name: string }[]
+  >([]);
 
   const handleUploadImage = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*", // Set the type to image only
+        type: "image/*",
         copyToCacheDirectory: true,
       });
 
@@ -209,7 +223,7 @@ const CreateCommunityScreen: React.FC = () => {
             uri: assets[0].uri,
             name: assets[0].name,
           };
-          setImages((prevImages) => [...prevImages, newImage]); // Add image to state
+          setImages((prevImages) => [...prevImages, newImage]); // Add image to images state
         }
       }
     } catch (error) {
@@ -217,27 +231,29 @@ const CreateCommunityScreen: React.FC = () => {
     }
   };
 
-  // Upload Profile Image handler (for profile image)
   const handleUploadProfileImage = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*", // Set the type to image only
+        type: "image/*",
         copyToCacheDirectory: true,
       });
 
       if (!result.canceled) {
         const { assets } = result;
         if (assets && assets[0]) {
-          const newImage = {
-            id: images.length.toString(),
+          const newProfileImage = {
+            id: profileImages.length.toString(),
             uri: assets[0].uri,
             name: assets[0].name,
           };
-          setImages((prevImages) => [...prevImages, newImage]); // Add image to state
+          setProfileImages((prevProfileImages) => [
+            ...prevProfileImages,
+            newProfileImage,
+          ]); // Add image to profileImages state
         }
       }
     } catch (error) {
-      Alert.alert("Error", "Could not upload the image.");
+      Alert.alert("Error", "Could not upload the profile image.");
     }
   };
 
@@ -266,96 +282,119 @@ const CreateCommunityScreen: React.FC = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Create Your Community</Text>
-
-        {/* First Upload Image Button */}
-        <TouchableOpacity
-          style={styles.uploadButton}
-          onPress={handleUploadImage}
-        >
-          <Text style={styles.uploadButtonText}>Upload General Image</Text>
-        </TouchableOpacity>
-
-        {/* Second Upload Profile Image Button */}
-        <TouchableOpacity
-          style={styles.uploadButton}
-          onPress={handleUploadProfileImage}
-        >
-          <Text style={styles.uploadButtonText}>Upload Profile Image</Text>
-        </TouchableOpacity>
-
-        {/* Render Uploaded Images */}
-        <FlatList
-          data={groupedImages}
-          keyExtractor={(item, index) => index.toString()} // You can change this to something unique in your data
-          renderItem={({ item }) => (
-            <View style={styles.rowContainer}>
-              {item.map((image) => (
-                <Image
-                  key={image.id}
-                  source={{ uri: image.uri }}
-                  style={styles.fileImage}
+        <View style={styles.containert}>
+          <View style={styles.containert}>
+            {/* Upload Image Button */}
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={handleUploadImage}
+            >
+              {images.length > 0 ? (
+                <FlatList
+                  data={images}
+                  keyExtractor={(item) => item.id}
+                  renderItem={renderFile}
+                  horizontal
+                  contentContainerStyle={styles.fileList} // Ensure styling fits inside button
                 />
-              ))}
-            </View>
-          )}
-          contentContainerStyle={styles.fileGrid}
-        />
+              ) : (
+                <View style={styles.imageText}>
+                  <Image
+                    source={require("../../../assets/add.png")}
+                    style={styles.imageTexts}
+                  />
+                  <Text style={styles.uploadButtonText}>Tap to Add</Text>
+                </View>
+              )}
+            </TouchableOpacity>
 
-        {/* Community Name Input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Your community name"
-          value={communityName}
-          onChangeText={setCommunityName}
-        />
-        {/* Category Selector */}
-        <Text style={styles.label}>Select Category:</Text>
-        <TouchableOpacity
-          style={styles.selectedCategory}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.categoryText}>
-            {selectedCategory || "Select a category..."}
-          </Text>
-        </TouchableOpacity>
+            {/* Second Upload Profile Image Button */}
+            <TouchableOpacity
+              style={styles.uploadButtona}
+              onPress={handleUploadProfileImage}
+            >
+              {profileImages.length > 0 ? (
+                <FlatList
+                  data={profileImages}
+                  keyExtractor={(item) => item.id}
+                  renderItem={renderFile}
+                  horizontal
+                  contentContainerStyle={styles.fileList} // Ensure styling fits inside button
+                />
+              ) : (
+                <View style={styles.imageText}>
+                  <Image
+                    source={require("../../../assets/add.png")}
+                    style={styles.imageTexts}
+                  />
+                  <Text style={styles.uploadButtonText}>Tap to Add</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
 
-        {/* Modal for selecting category */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={categories}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.categoryItem}
-                    onPress={() => handleSelectCategory(item)}
-                  >
-                    <Text style={styles.categoryItemText}>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={(item) => item}
+          {/* Community Name Input */}
+          <View style={styles.nameinput}>
+            <View>
+              <TextInput
+                style={styles.input}
+                placeholder="Your community name"
+                value={communityName}
+                onChangeText={setCommunityName}
               />
+            </View>
+            <View>
+              {/* Category Selector */}
+
               <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}
+                style={styles.selectedCategory}
+                onPress={() => setModalVisible(true)}
               >
-                <Text style={styles.closeButtonText}>Close</Text>
+                <Text style={styles.categoryText}>
+                  {selectedCategory || "Pick Category"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
 
-        {/* Social Links */}
-        <View style={styles.iconContainer}>
-          {renderIcon("instagram", "logo-instagram")}
-          {renderIcon("linkedin", "logo-linkedin")}
-          {renderIcon("discord", "logo-discord")}
-          {renderIcon("xcom", "logo-twitter")}
+          {/* Modal for selecting category */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={categories}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.categoryItem}
+                      onPress={() => handleSelectCategory(item)}
+                    >
+                      <Text style={styles.categoryItemText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={(item) => item}
+                />
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          {/* Social Links */}
+          <View style={styles.iconContainer}>
+            {renderIcon("instagram", "logo-instagram")}
+            {renderIcon("linkedin", "logo-linkedin")}
+            {renderIcon("discord", "logo-discord")}
+            {renderIcon("xcom", "logo-twitter")}
+          </View>
         </View>
 
         {/* Submit Button */}
@@ -367,21 +406,25 @@ const CreateCommunityScreen: React.FC = () => {
   } else if (selectedScreen === "SubmissionScreen") {
     return (
       <View style={styles.containers}>
-        {/* Render Images vertically */}
-        <FlatList
-          data={images}
-          keyExtractor={(item) => item.id}
-          renderItem={renderFile}
-        />
-
-        <Text style={styles.submittedText}>
-          Community Name: {communityName}
-        </Text>
-        <Text style={styles.submittedText}>Category: {selectedCategory}</Text>
+        <View style={styles.acontainers}>
+          <FlatList
+            data={[...images, ...profileImages]} // Combine both lists
+            keyExtractor={(item) => item.id}
+            renderItem={renderFilea}
+            contentContainerStyle={{
+              gap: 16,
+              flexDirection: "column",
+            }}
+          />
+          <View style={styles.aacontainers}>
+            <Text style={styles.submittedText}>{communityName}</Text>
+            <Text style={styles.submittedText}>{selectedCategory}</Text>
+          </View>
+        </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.sendButton} onPress={handleSave}>
-          <Image
+            <Image
               source={require("../../../assets/save.png")}
               style={styles.detailImagea}
             />
@@ -430,15 +473,28 @@ const CreateCommunityScreen: React.FC = () => {
 const styles = StyleSheet.create({
   detailImagea: {
     width: 17,
-    height: 17
+    height: 17,
   },
   containers: {
-    height: 600,
+    flexDirection: "column",
+    gap: 32,
+  },
+  acontainers: {
+    flexDirection: "column",
+    gap: 8,
+  },
+  aacontainers: {
+    flexDirection: "column",
+    gap: 16,
   },
   container: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
+  },
+  containert: {
+    flexDirection: "column",
+    gap: 32,
   },
   title: {
     fontSize: 24,
@@ -448,23 +504,60 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
+    borderColor: "#000",
+    borderRadius: 10,
+    borderStyle: "dashed",
     padding: 10,
     marginBottom: 15,
+    width: 300,
+    height: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
   },
   uploadButton: {
-    backgroundColor: "black",
+    backgroundColor: "#E8E8E8",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 8,
+    color: "black",
+    justifyContent: "center",
+    width: 273,
+    height: 123,
+  },
+  uploadButtona: {
+    backgroundColor: "#E8E8E8",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignSelf: "center",
+    marginBottom: 8,
+    color: "black",
+    width: 150,
+    justifyContent: "center",
+    height: 150,
+  },
+  imageText: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+  imageTexts: {
+    width: 30,
+    height: 30,
   },
   uploadButtonText: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     textAlign: "center",
+  },
+  fileList: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   fileGrid: {
     justifyContent: "center",
@@ -472,14 +565,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   fileContainer: {
-    flex: 1,
-    margin: 10,
+    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   fileImage: {
     width: 250,
+    height: 100,
+    borderRadius: 8,
+  },
+  fileImageq: {
+    width: 300,
     height: 200,
-    marginBottom: 10,
     borderRadius: 8,
   },
   fileName: {
@@ -492,7 +589,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    color: "blue",
+
     marginVertical: 5,
   },
   submitButton: {
@@ -547,13 +644,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 10,
   },
+  nameinput: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   selectedCategory: {
+    flexDirection: "row",
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: "#e0e0e0",
+    borderColor: "#000",
+    borderWidth: 1,
     borderRadius: 10,
-    width: "80%",
+    width: 200,
+    height: 45,
     alignItems: "center",
+    justifyContent: "center",
   },
   submittedDataContainer: {
     marginTop: 20,
@@ -613,7 +719,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -629,7 +734,6 @@ const styles = StyleSheet.create({
     borderColor: "#D4D4D4",
     padding: 10,
     borderRadius: 8,
-    
   },
   buttonText: {
     color: "#fff",
