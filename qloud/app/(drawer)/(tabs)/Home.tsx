@@ -12,7 +12,7 @@ import {
   Platform,
   Animated,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 const Home: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'Feed' | 'Qloud'>('Feed');

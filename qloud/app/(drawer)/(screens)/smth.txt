@@ -1,0 +1,472 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from "react-native";
+import { useRoute } from "@react-navigation/native"; // Correct import for useRoute
+
+// Define the interface for the expected parameters
+interface PostDetailParams {
+  communityName: string;
+  profileImage: string;
+  onBack: () => void;
+}
+
+const CommunityDetails = [
+  {
+    id: 1,
+    image: require("../../../assets/profile-man.png"),
+    name: "Kane",
+    description:
+      "This is just a test what do you guys think about my business that I am currently working on, please give me feedback’s on the snippet on my profile. Thank you.",
+    social: "@kanemane",
+  },
+  {
+    id: 2,
+    image: require("../../../assets/profile-man.png"),
+    name: "Kane",
+    description:
+      "This is just a test what do you guys think about my business that I am currently working on, please give me feedback’s on the snippet on my profile. Thank you.",
+    social: "@kanemane",
+  },
+  {
+    id: 3,
+    image: require("../../../assets/profile-man.png"),
+    name: "Kane",
+    description:
+      "This is just a test what do you guys think about my business that I am currently working on, please give me feedback’s on the snippet on my profile. Thank you.",
+    social: "@kanemane",
+  },
+  {
+    id: 4,
+    image: require("../../../assets/profile-man.png"),
+    name: "Kane",
+    description:
+      "This is just a test what do you guys think about my business that I am currently working on, please give me feedback’s on the snippet on my profile. Thank you.",
+    social: "@kanemane",
+  },
+  {
+    id: 5,
+    image: require("../../../assets/profile-man.png"),
+    name: "Kane",
+    description:
+      "This is just a test what do you guys think about my business that I am currently working on, please give me feedback’s on the snippet on my profile. Thank you.",
+    social: "@kanemane",
+  },
+];
+
+const [activeTab, setActiveTab] = useState<"Feed" | "Qloud">("Feed");
+
+
+
+const handleTabPress = (tab: "Feed" | "Qloud") => {
+  Animated.spring(new Animated.Value(0), {
+    toValue: 1,
+    useNativeDriver: true,
+  }).start(() => setActiveTab(tab));
+};
+
+const [activeStep, setActiveStep] = useState(2); // Current progress step (e.g., 1 for "Foundation", 2 for "Development")
+
+const animatedValues = {
+  scale: new Animated.Value(1),
+  opacity: new Animated.Value(0.5),
+};
+
+const startAnimation = () => {
+  Animated.loop(
+    Animated.sequence([
+      Animated.timing(animatedValues.scale, {
+        toValue: 1.1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValues.scale, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ])
+  ).start();
+
+  Animated.timing(animatedValues.opacity, {
+    toValue: 1,
+    duration: 500,
+    useNativeDriver: true,
+  }).start();
+};
+
+useEffect(() => {
+  startAnimation();
+}, [activeStep]);
+
+const progressSteps = ["Foundation", "Development", "Launch", "Scale"];
+
+// The PostDetail component for rendering the details
+const PostDetail: React.FC<PostDetailParams> = ({
+  communityName,
+  profileImage,
+  onBack,
+}) => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.buttongs}>
+        <TouchableOpacity onPress={onBack} style={styles.backButton}>
+          <Image
+            source={require("../../../assets/left.png")}
+            style={styles.arrowImage}
+          />
+        </TouchableOpacity>
+        <View style={styles.buttongw}>
+          <Text>{communityName}</Text>
+        </View>
+      </View>
+
+      <View style={styles.detailWhole}>
+        <View style={styles.details}>
+          {CommunityDetails.map((details) => (
+            <View key={details.id}>
+              <View style={styles.containerD}>
+                <Image source={details.image} style={styles.detailImage} />
+                <View style={styles.containerR}>
+                  <Text>{details.name}</Text>
+                  <Text>{details.social}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+        {/* Animated Circle */}
+        {progressSteps.map((step, index) => (
+          <View style={styles.stepContainer} key={index}>
+            {/* Line between steps */}
+            {index !== 0 && (
+              <View
+                style={[
+                  styles.progressLine,
+                  index <= activeStep && styles.activeLine,
+                ]}
+              />
+            )}
+            {/* Animated Circle */}
+            <TouchableOpacity
+              style={[
+                styles.progressCircle,
+                index <= activeStep
+                  ? styles.activeCircle
+                  : styles.inactiveCircle,
+              ]}
+              onPress={() => setActiveStep(index)}
+            >
+              {index === activeStep ? (
+                <Animated.View
+                  style={[
+                    styles.pulseEffect,
+                    {
+                      transform: [{ scale: animatedValues.scale }],
+                      opacity: animatedValues.opacity,
+                    },
+                  ]}
+                />
+              ) : null}
+              <Text style={styles.progressText}>{step}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+};
+
+// The CommunityMessage component where user clicks the arrow to reveal the PostDetail
+const CommunityMessage: React.FC = () => {
+  // Local state to manage whether the post details should be shown
+  const [showPostDetail, setShowPostDetail] = useState(false);
+
+  // Get dynamic values from the route using useRoute
+  const route = useRoute();
+  const { communityName, profileImage } = route.params as {
+    communityName: string;
+    profileImage: string;
+  };
+
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+
+  const handleNavigateToPostDetail = () => {
+    setShowPostDetail(true); // Show PostDetail
+  };
+
+  const handleBackToCommunityMessage = () => {
+    setShowPostDetail(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Conditionally render PostDetail or CommunityMessage */}
+      {showPostDetail ? (
+        <PostDetail
+          communityName={communityName}
+          profileImage={profileImage}
+          onBack={handleBackToCommunityMessage} // Pass back handler
+        />
+      ) : (
+        <View style={styles.wholeContainer}>
+          <View style={styles.columnContainer}>
+            {profileImage ? (
+              <Image
+                source={{ uri: profileImage }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <Text>No profile image available</Text>
+            )}
+            <View style={styles.rowContainer}>
+              <Text style={styles.communityName}>{communityName}</Text>
+
+              {/* Right Arrow Button to toggle PostDetail */}
+              <TouchableOpacity
+                onPress={handleNavigateToPostDetail}
+                style={styles.arrowContainer}
+              >
+                <Image
+                  source={require("../../../assets/arrow.png")}
+                  style={styles.arrowImage}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>{" "}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.createButtonA}>
+              <Text style={styles.createButtonTextA}>All</Text>
+            </TouchableOpacity>
+            {["General", "Wins", "Exclusives"].map((label, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.buttons,
+                  label === "General" && styles.generalButton,
+                  label === "Wins" && styles.winButton,
+                  label === "Exclusives" && styles.exButton,
+                  hoveredButton === label && styles.hoverButton, // Apply hover effect
+                ]}
+                onPressIn={() => setHoveredButton(label)}
+                onPressOut={() => setHoveredButton(null)}
+              >
+                <Text
+                  style={[
+                    styles.createButtonText,
+                    hoveredButton === label && styles.hoverText, // Change text color
+                  ]}
+                >
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.details}>
+            {CommunityDetails.map((details) => (
+              <View key={details.id}>
+                <View style={styles.containerD}>
+                  <Image source={details.image} style={styles.detailImage} />
+                  <View style={styles.containerR}>
+                    <Text>{details.name}</Text>
+                    <Text>{details.description}</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  progressLine: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#e0e0e0",
+  },
+  activeLine: {
+    backgroundColor: "#34C759",
+  },
+  stepContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  activeCircle: {
+    backgroundColor: "#34C759",
+    elevation: 5,
+    shadowColor: "#34C759",
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  inactiveCircle: {
+    backgroundColor: "#e0e0e0",
+  },
+  progressCircle: {
+    width: 70,
+    height: 70,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  pulseEffect: {
+    position: "absolute",
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(52, 199, 89, 0.5)",
+    zIndex: 0,
+  },
+
+  progressText: {
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    fontSize: 10,
+    zIndex: 1,
+  },
+  buttongs: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 100,
+    paddingBottom: 20,
+  },
+  buttongw: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backButton: {
+    padding: 10,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+  },
+  hoverButton: {
+    backgroundColor: "#FFFFFF",
+  },
+  hoverText: {
+    color: "#000000",
+  },
+  buttons: {
+    height: 44,
+    backgroundColor: "#FFF",
+    padding: 15,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  exButton: {
+    width: 112,
+  },
+  winButton: {
+    width: 60,
+  },
+  generalButton: {
+    width: 79,
+  },
+  generalButtonText: {
+    color: "#000",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "auto",
+  },
+  createButton: {
+    width: 55,
+    height: 44,
+    backgroundColor: "#000000",
+    padding: 15,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  createButtonA: {
+    width: 55,
+    height: 44,
+    backgroundColor: "#000000",
+    padding: 15,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  createButtonText: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+  createButtonTextA: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  detailWhole: {
+    flexDirection: "row",
+    gap: 24,
+  },
+  details: {
+    flexDirection: "column",
+    gap: 20,
+  },
+  detailImage: {
+    width: 47,
+    height: 47,
+  },
+  wholeContainer: {
+    flexDirection: "column",
+    justifyContent: "space-around",
+    gap: 30,
+  },
+  containerD: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  containerR: {
+    flexDirection: "column",
+    gap: 4,
+    width: 300,
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  columnContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+
+    gap: 25,
+  },
+  rowContainer: {
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  communityName: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  profileImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 50, // Round the image
+  },
+  arrowContainer: {},
+  arrow: {
+    fontSize: 30, // Adjust the size of the arrow
+  },
+  arrowImage: {
+    width: 24,
+    height: 24,
+  },
+});
+
+export default CommunityMessage;
