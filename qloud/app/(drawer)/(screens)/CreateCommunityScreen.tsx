@@ -380,12 +380,18 @@ const CreateCommunityScreen: React.FC = () => {
         <Text style={styles.submittedText}>Category: {selectedCategory}</Text>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.buttonText}>Save</Text>
+          <TouchableOpacity style={styles.sendButton} onPress={handleSave}>
+          <Image
+              source={require("../../../assets/save.png")}
+              style={styles.detailImagea}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Text style={styles.buttonText}>Send</Text>
+            <Image
+              source={require("../../../assets/sent.png")}
+              style={styles.detailImagea}
+            />
           </TouchableOpacity>
         </View>
 
@@ -422,6 +428,10 @@ const CreateCommunityScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  detailImagea: {
+    width: 17,
+    height: 17
+  },
   containers: {
     height: 600,
   },
@@ -607,18 +617,19 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    justifyContent: "center",
+    gap: 30,
   },
   saveButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#D4D4D4",
     padding: 10,
     borderRadius: 8,
   },
   sendButton: {
-    backgroundColor: "#000",
+    borderColor: "#D4D4D4",
     padding: 10,
     borderRadius: 8,
+    
   },
   buttonText: {
     color: "#fff",

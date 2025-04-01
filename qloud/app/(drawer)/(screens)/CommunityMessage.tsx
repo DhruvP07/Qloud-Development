@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 100,
-    paddingBottom: 20,
+   
   },
   buttongw: {
     flexDirection: "row",
@@ -416,7 +416,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
+    gap: 20
   },
   columnContainer: {
     flexDirection: "row",
