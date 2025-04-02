@@ -33,6 +33,8 @@ interface CommunityMessage {
   communityName: string;
 }
 
+
+
 const CreateCommunityScreen: React.FC = () => {
   const navigation = useNavigation();
   const [files, setFiles] = useState<

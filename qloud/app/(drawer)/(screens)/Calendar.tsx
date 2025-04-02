@@ -1,3 +1,4 @@
+import { globalStyles } from "@/globalStyles";
 import React, { useState } from "react";
 import {
   View,
@@ -57,7 +58,7 @@ const Calendar = () => {
       <Text style={styles.dayText}>{item.day}</Text>
       {item.marker === "$" && (
         <View style={styles.markerContainer}>
-          <Text style={styles.dollarMarker}>$</Text>
+          <Text style={globalStyles.regularText}>$</Text>
         </View>
       )}
       {item.marker === "circle" && (
@@ -68,14 +69,14 @@ const Calendar = () => {
       {item.marker === "X" && (
         <Text style={styles.xMarker}>X</Text>
       )}
-      {item.text !== "" && <Text style={styles.textMarker}>{item.text}</Text>}
+      {item.text !== "" && <Text style={globalStyles.regularText}>{item.text}</Text>}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Text style={styles.header}>Qloud Calendar</Text>
+      <Text style={globalStyles.boldText}>Qloud Calendar</Text>
 
       {/* Input Section */}
       <View style={styles.inputSection}>
@@ -94,14 +95,14 @@ const Calendar = () => {
           onChangeText={setCustomText}
         />
         <TouchableOpacity style={styles.addButton} onPress={handleAddMarker}>
-          <Text style={styles.addButtonText}>Add Marker</Text>
+          <Text style={globalStyles.regularText}>Add Marker</Text>
         </TouchableOpacity>
       </View>
 
       {/* Days of the Week */}
       <View style={styles.weekContainer}>
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <Text key={day} style={styles.weekText}>
+          <Text key={day} style={globalStyles.regularText}>
             {day}
           </Text>
         ))}

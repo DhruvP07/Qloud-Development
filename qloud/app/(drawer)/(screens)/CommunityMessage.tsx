@@ -505,7 +505,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   detailsContainer: {
-    maxHeight: 690, // Adjust based on your layout
+    maxHeight: 660, // Adjust based on your layout
+    marginBottom: 60
   },
   details: {
     flexDirection: "column",
@@ -552,18 +553,17 @@ const styles = StyleSheet.create({
   messageBox: {
     maxWidth: "70%",
     backgroundColor: "#f0f0f0",
-    
+
     borderRadius: 10,
   },
   message: {
     flexDirection: "column",
     width: 400,
-    alignItems: 'flex-start'
+    alignItems: "flex-start",
   },
   messageText: {
     fontSize: 14,
     color: "#333",
-    
   },
   sentImage: {
     width: 150,
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    gap: 20,
+    flexDirection: "column",
   },
   columnContainer: {
     flexDirection: "row",
@@ -607,14 +607,15 @@ const styles = StyleSheet.create({
     height: 24,
   },
   chatContainer: {
-    position: "absolute",
-    bottom: 0,
+    position: "absolute", // Fixed position
+    bottom: 0, // Stick to the bottom
     left: 0,
     right: 0,
     padding: 10,
     backgroundColor: "#f8f8f8",
     borderTopWidth: 1,
     borderColor: "#ddd",
+    zIndex: 10,
   },
 
   chatInputRow: {

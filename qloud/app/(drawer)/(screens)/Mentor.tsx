@@ -1,3 +1,4 @@
+import { globalStyles } from "@/globalStyles";
 import React, { useState } from "react";
 import {
   View,
@@ -65,7 +66,7 @@ const MentorPathway = () => {
       case 1:
         return (
           <View style={styles.modal}>
-            <Text style={styles.title}>Select a Category</Text>
+            <Text style={globalStyles.boldText}>Select a Category</Text>
             <View style={styles.categories}>
               {categories.map((category) => (
                 <TouchableOpacity
@@ -78,7 +79,7 @@ const MentorPathway = () => {
                 >
                   <Text
                     style={[
-                      styles.categoryText,
+                      globalStyles.regularText,
                       selectedCategory === category && styles.selectedCategoryText,
                     ]}
                   >
@@ -88,14 +89,14 @@ const MentorPathway = () => {
               ))}
             </View>
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-              <Text style={styles.nextButtonText}>Next</Text>
+              <Text style={globalStyles.regularText}>Next</Text>
             </TouchableOpacity>
           </View>
         );
       case 2:
         return (
           <View style={styles.modal}>
-            <Text style={styles.title}>Select a Mentor</Text>
+            <Text style={globalStyles.boldText}>Select a Mentor</Text>
             <View style={styles.mentors}>
               {mentors.map((mentorName) => (
                 <TouchableOpacity
@@ -108,7 +109,7 @@ const MentorPathway = () => {
                 >
                   <Text
                     style={[
-                      styles.mentorText,
+                      globalStyles.regularText,
                       selectedMentor === mentorName && styles.selectedMentorText,
                     ]}
                   >
@@ -118,14 +119,14 @@ const MentorPathway = () => {
               ))}
             </View>
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-              <Text style={styles.nextButtonText}>Next</Text>
+              <Text style={globalStyles.regularText}>Next</Text>
             </TouchableOpacity>
           </View>
         );
       case 3:
         return (
           <View style={styles.modal}>
-            <Text style={styles.title}>
+            <Text style={globalStyles.boldText}>
               Hey, {selectedMentor}, What questions do you have for me?
             </Text>
             <TextInput
@@ -136,7 +137,7 @@ const MentorPathway = () => {
               onChangeText={setMessage}
             />
             <TouchableOpacity style={styles.nextButton} onPress={handleSend}>
-              <Text style={styles.nextButtonText}>Send</Text>
+              <Text style={globalStyles.regularText}>Send</Text>
             </TouchableOpacity>
           </View>
         );

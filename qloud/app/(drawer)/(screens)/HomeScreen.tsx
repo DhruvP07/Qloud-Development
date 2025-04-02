@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
+import { globalStyles } from '@/globalStyles';
 
 const Home = () =>  {
   return (
@@ -8,11 +9,11 @@ const Home = () =>  {
         source={require('@/assets/logo.png')} // Replace with your logo path test check in
         style={styles.logo}
       />
-      <Text style={styles.title}>Welcome to Qloud</Text>
-      <Text style={styles.subtitle}>Empowering your business through innovation and technology.</Text>
+      <Text style={globalStyles.regularText}>Welcome to Qloud</Text>
+      <Text style={globalStyles.regularText}>Empowering your business through innovation and technology.</Text>
 
       <TouchableOpacity style={styles.ctaButton}>
-        <Link href={'/Home'} style={styles.ctaText}>
+        <Link href={'/Home'} style={globalStyles.regularText}>
           Learn More
         </Link>
       </TouchableOpacity>

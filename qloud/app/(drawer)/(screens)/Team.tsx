@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import CalorieAIScreen from "./CalorieAIScreen";
 import TechBrosScreen from "./TechBrosScreen";
 import CreateCommunityScreen from "./CreateCommunityScreen";
+import { globalStyles } from "@/globalStyles";
 
 const categories = ["Tech", "Finance", "E-Commerce", "Fashion"];
 const trendingTeams = [
@@ -28,7 +29,7 @@ const Team: React.FC = () => {
       <View style={styles.container}>
         <CalorieAIScreen />
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <Text style={styles.backButtonText}>Back</Text>
+          <Text style={globalStyles.regularText}>Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -39,7 +40,7 @@ const Team: React.FC = () => {
       <View style={styles.containerTech}>
         <TechBrosScreen />
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <Text style={styles.backButtonText}>Back</Text>
+          <Text style={globalStyles.regularText}>Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -50,7 +51,7 @@ const Team: React.FC = () => {
       <View style={styles.containerTech}>
         <CreateCommunityScreen />
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <Text style={styles.backButtonText}>Back</Text>
+          <Text style={globalStyles.regularText}>Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -58,18 +59,18 @@ const Team: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>JOIN TEAM</Text>
+      <Text style={globalStyles.regularText}>JOIN TEAM</Text>
 
       {/* Categories */}
       <View style={styles.categoryContainer}>
         {categories.map((category) => (
           <TouchableOpacity key={category} style={styles.category}>
-            <Text style={styles.categoryText}>{category}</Text>
+            <Text style={globalStyles.regularText}>{category}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.subtitle}>TRENDING</Text>
+      <Text style={globalStyles.regularText}>TRENDING</Text>
 
       {/* Trending Teams */}
       <View style={styles.teamList}>
@@ -80,15 +81,15 @@ const Team: React.FC = () => {
             onPress={() => handleNavigate(team.link)}
           >
             <Image source={team.image} style={styles.teamImage} />
-            <Text style={styles.teamName}>{team.name}</Text>
-            <Text style={styles.teamMembers}>{team.members} members</Text>
+            <Text style={globalStyles.regularText}>{team.name}</Text>
+            <Text style={globalStyles.regularText}>{team.members} members</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       {/* Create Community Button */}
       <TouchableOpacity style={styles.createButton} onPress={() => handleNavigate("CreateCommunityScreen")}>
-        <Text style={styles.createButtonText}>+ Create a Community</Text>
+        <Text style={globalStyles.regularText}>+ Create a Community</Text>
       </TouchableOpacity>
     </View>
   );

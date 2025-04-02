@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import { forgotPassword } from "../../services/apiService";
 import { signIn, signUp } from "../../services/authService";
+import { globalStyles } from "@/globalStyles";
 
 const Login = () => {
   const router = useRouter();
@@ -94,10 +95,10 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>QLOUD</Text>
-      <Text style={styles.welcomeText}>Welcome back!</Text>
-      <Text style={styles.subtitle}>We’re excited to see you again!</Text>
+      <Text style={globalStyles.regularText}>Welcome back!</Text>
+      <Text style={globalStyles.regularText}>We’re excited to see you again!</Text>
 
-      <Text style={styles.label}>Enter credentials to log in</Text>
+      <Text style={globalStyles.regularText}>Enter credentials to log in</Text>
 
       {isSignUp && (
         <View style={styles.signUpFields}>
@@ -140,23 +141,23 @@ const Login = () => {
       {isSuccess  && <Text style={styles.successText}>User {firstname} added successfully , Please login now </Text>}
 
       <TouchableOpacity onPress={handleForgotPassword}>
-        <Text style={styles.forgotPassword}>Forgot your password?</Text>
+        <Text style={globalStyles.regularText}>Forgot your password?</Text>
       </TouchableOpacity>
 
       {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-        <Text style={styles.signInButtonText}>Log In</Text>
+        <Text style={globalStyles.regularText}>Log In</Text>
       </TouchableOpacity>}
 
       {!isSignUp&&<Text style={styles.orText}>or</Text>}
 
       {/* Toggle between "Create Account" and "Sign Up" */}
       {isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
-        <Text style={styles.signInButtonText}>
+        <Text style={globalStyles.regularText}>
           {"Sign Up"}
         </Text>
       </TouchableOpacity>}
       {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={createAccount}>
-        <Text style={styles.signInButtonText}>
+        <Text style={globalStyles.regularText}>
           {"Create Account"}
         </Text>
       </TouchableOpacity>}

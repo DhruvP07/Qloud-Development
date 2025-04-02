@@ -1,32 +1,32 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { View, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
-import Sidebar from './(drawer)/Sidebar'; // Import Sidebar component
-import BottomBar from '../components/BottomBar'; // Import BottomBar component
-import HomeScreen from './index'; // Replace with actual paths
-import NotificationsScreen from './(drawer)/(screens)/NotificationsScreen';
-import ProfileScreen from './(drawer)/(screens)/Profile';
-import SettingsScreen from './(drawer)/(screens)/SettingsScreen';
+import { useFonts, Inter_400Regular } from '@expo-google-fonts/inter';
+import * as Font from 'expo-font';
 
+export default function Layout() {
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+  });
 
-const Layout: React.FC = () => {
+  if (!fontsLoaded) {
+    return null; // Prevent rendering until fonts are loaded
+  }
+
   return (
     <View style={styles.container}>
       <Stack>
-      <Stack.Screen
+        <Stack.Screen
           name="index"
           options={{
             headerShown: false, // Hide header for index.tsx
           }}
         />
         <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-        
       </Stack>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -39,5 +39,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain', // Ensure the image scales properly
   },
 });
-
-export default Layout;

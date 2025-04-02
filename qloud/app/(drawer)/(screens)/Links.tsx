@@ -1,3 +1,4 @@
+import { globalStyles } from "@/globalStyles";
 import React, { useState } from "react";
 import {
   View,
@@ -132,13 +133,13 @@ const profiles = [
         <View style={styles.profileHeader}>
           <Image source={profile.avatar} style={styles.avatar} />
           <View style={styles.profileInfo}>
-            <Text style={styles.name}>{profile.name}</Text>
-            <Text style={styles.location}>{profile.location}</Text>
+            <Text style={globalStyles.regularText}>{profile.name}</Text>
+            <Text style={globalStyles.regularText}>{profile.location}</Text>
             <TouchableOpacity>
-              <Text style={styles.link}>{profile.website1}</Text>
+              <Text style={globalStyles.regularText}>{profile.website1}</Text>
             </TouchableOpacity>
             <TouchableOpacity>
-              <Text style={styles.link}>{profile.website2}</Text>
+              <Text style={globalStyles.regularText}>{profile.website2}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -146,16 +147,16 @@ const profiles = [
         {/* Stats */}
         <View style={styles.stats}>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{profile.followers}</Text>
-            <Text style={styles.statLabel}>Followers</Text>
+            <Text style={globalStyles.regularText}>{profile.followers}</Text>
+            <Text style={globalStyles.regularText}>Followers</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{profile.connections}</Text>
-            <Text style={styles.statLabel}>Connections</Text>
+            <Text style={globalStyles.regularText}>{profile.connections}</Text>
+            <Text style={globalStyles.regularText}>Connections</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{profile.interests}</Text>
-            <Text style={styles.statLabel}>Interests</Text>
+            <Text style={globalStyles.regularText}>{profile.interests}</Text>
+            <Text style={globalStyles.regularText}>Interests</Text>
           </View>
         </View>
   
@@ -167,7 +168,7 @@ const profiles = [
           style={styles.connectButton}
           onPress={() => handleConnect(profile.name)}
         >
-          <Text style={styles.connectButtonText}>Connect</Text>
+          <Text style={globalStyles.regularText}>Connect</Text>
         </TouchableOpacity>
       </View>
     );
@@ -176,8 +177,8 @@ const profiles = [
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Change Preferences</Text>
-          <Text style={styles.notificationBadge}>12</Text>
+          <Text style={globalStyles.regularText}>Change Preferences</Text>
+          <Text style={globalStyles.regularText}>12</Text>
           <TouchableOpacity>
             <Text style={styles.addIcon}>+</Text>
           </TouchableOpacity>

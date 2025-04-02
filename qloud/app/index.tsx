@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { globalStyles } from '@/globalStyles';
 
 export default function Index() {
   const router = useRouter();
@@ -51,13 +52,13 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Image source={require('@/assets/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Welcome to Qloud</Text>
-      <Text style={styles.subtitle}>Empowering your business through innovation and technology.</Text>
+      <Text style={globalStyles.boldText}>Welcome to Qloud</Text>
+      <Text style={globalStyles.largeText}>Empowering your business through innovation and technology.</Text>
       
       {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
       <TouchableOpacity style={styles.ctaButton}>
-        <Link href={'/Home'} style={styles.ctaText}>Learn More</Link>
+        <Link href={'/Home'} style={globalStyles.regularText}>Learn More</Link>
       </TouchableOpacity>
     </View>
   );

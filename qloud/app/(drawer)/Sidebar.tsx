@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'rea
 import { MaterialIcons, FontAwesome5, Entypo, Feather } from '@expo/vector-icons';
 import { router, Router, useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { globalStyles } from '@/globalStyles';
 
 interface SidebarProps {
   navigation: any;
@@ -28,43 +29,43 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
             style={styles.profileImage}
           />
         </TouchableOpacity>
-        <Text style={styles.username}>Marwan Al Asadi</Text>
-        <Text style={styles.handle}>@hisroyalfreshness</Text>
+        <Text style={globalStyles.regularText}>Marwan Al Asadi</Text>
+        <Text style={globalStyles.regularText}>@hisroyalfreshness</Text>
       </View>
 
       {/* Menu Items */}
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Home')}>
           <MaterialIcons name="home" size={20} color="white" />
-          <Text style={styles.menuText}>Home</Text>
+          <Text style={globalStyles.regularText}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Files')}>
           <MaterialIcons name="folder" size={20} color="white" />
-          <Text style={styles.menuText}>Files</Text>
+          <Text style={globalStyles.regularText}>Files</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Login')}>
           <MaterialIcons name="calendar-today" size={20} color="white" />
-          <Text style={styles.menuText}>Calendar</Text>
+          <Text style={globalStyles.regularText}>Calendar</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Mentor')}>
           <FontAwesome5 name="chalkboard-teacher" size={20} color="white" />
-          <Text style={styles.menuText}>Mentor</Text>
+          <Text style={globalStyles.regularText}>Mentor</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Team')}>
           <MaterialIcons name="group" size={20} color="white" />
-          <Text style={styles.menuText}>Team</Text>
+          <Text style={globalStyles.regularText}>Team</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Links')}>
           <Entypo name="link" size={20} color="white" />
-          <Text style={styles.menuText}>Links</Text>
+          <Text style={globalStyles.regularText}>Links</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Speeches')}>
           <Feather name="mic" size={20} color="white" />
-          <Text style={styles.menuText}>Speeches</Text>
+          <Text style={globalStyles.regularText}>Speeches</Text>
         </TouchableOpacity>
 
         {/* Divider */}
@@ -73,27 +74,27 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
         {/* Footer Items */}
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Settings')}>
           <MaterialIcons name="settings" size={20} color="white" />
-          <Text style={styles.menuText}>Settings</Text>
+          <Text style={globalStyles.regularText}>Settings</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Help')}>
           <MaterialIcons name="help-outline" size={20} color="white" />
-          <Text style={styles.menuText}>Help Center</Text>
+          <Text style={globalStyles.regularText}>Help Center</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/Contact')}>
           <MaterialIcons name="call" size={20} color="white" />
-          <Text style={styles.menuText}>Contact</Text>
+          <Text style={globalStyles.regularText}>Contact</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.push('/SocialMedia')}>
           <Entypo name="network" size={20} color="white" />
-          <Text style={styles.menuText}>Social Media</Text>
+          <Text style={globalStyles.regularText}>Social Media</Text>
         </TouchableOpacity>
         // Inside the Logout Button
         <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
           <Entypo name="login" size={20} color="white" />
-          <Text style={styles.menuText}>Logout</Text>
+          <Text style={globalStyles.regularText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
