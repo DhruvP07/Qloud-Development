@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 import { useRoute } from "@react-navigation/native"; // Correct import for useRoute
-
+import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 // Define the interface for the expected parameters
 interface PostDetailParams {
   communityName: string;
@@ -175,6 +184,18 @@ const CommunityMessage: React.FC = () => {
   };
 
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [messages, setMessages] = useState<
+    {
+      id: string;
+      name: string;
+      text: string;
+      profileImage?: string;
+      image?: string;
+      communityName: string;
+    }[]
+  >([]);
 
   const handleNavigateToPostDetail = () => {
     setShowPostDetail(true); // Show PostDetail
@@ -182,6 +203,38 @@ const CommunityMessage: React.FC = () => {
 
   const handleBackToCommunityMessage = () => {
     setShowPostDetail(false);
+  };
+
+  // Handle image selection
+  // const handleImageUpload = async () => {
+  //   const result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   if (!result.cancelled && result.assets && result.assets.length > 0) {
+  //     setSelectedImage(result.assets[0].uri);
+  //   }
+  // };
+
+  // Handle sending the message
+  const handleSendMessage = () => {
+    if (!message.trim() && !selectedImage) return;
+
+    const newMessage = {
+      id: Date.now().toString(),
+      name: "User", // Change to actual user name if available
+      text: message,
+      profileImage: profileImage, // ✅ Ensure this is defined
+      communityName: communityName, // ✅ Ensure this is defined
+      image: selectedImage, // ✅ Store selected image if any
+    };
+
+    setMessages([...messages, newMessage]);
+    setMessage("");
+    setSelectedImage(null);
   };
 
   return (
@@ -247,18 +300,89 @@ const CommunityMessage: React.FC = () => {
               </TouchableOpacity>
             ))}
           </View>
-          <View style={styles.details}>
-            {CommunityDetails.map((details) => (
-              <View key={details.id}>
-                <View style={styles.containerD}>
-                  <Image source={details.image} style={styles.detailImage} />
-                  <View style={styles.containerR}>
-                    <Text>{details.name}</Text>
-                    <Text>{details.description}</Text>
+          {/* user messages */}
+          <ScrollView style={styles.detailsContainer}>
+            <View style={styles.details}>
+              {CommunityDetails.map((details) => (
+                <View key={details.id}>
+                  <View style={styles.containerD}>
+                    <Image source={details.image} style={styles.detailImage} />
+                    <View style={styles.containerR}>
+                      <Text>{details.name}</Text>
+                      <Text>{details.description}</Text>
+                    </View>
                   </View>
                 </View>
+              ))}
+              {messages.map((msg) => (
+                <View key={msg.id} style={styles.messageContainer}>
+                  {/* Profile Image on Left */}
+                  {msg.profileImage ? (
+                    <Image
+                      source={{ uri: msg.profileImage }}
+                      style={styles.profileImage}
+                    />
+                  ) : (
+                    <View /> // Fallback if no image
+                  )}
+
+                  {/* Name & Community Name */}
+                  <View style={styles.message}>
+                    <Text>{msg.communityName}</Text>
+                    {/* Message Box on Right */}
+                    <View style={styles.messageBox}>
+                      {msg.image && (
+                        <Image
+                          source={{ uri: msg.image }}
+                          style={styles.sentImage}
+                        />
+                      )}
+                      <Text style={styles.messageText}>{msg.text}</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+          {/* Chat box */}
+          <View style={styles.chatContainer}>
+            {/* Chat input row */}
+            <View style={styles.chatInputRow}>
+              {/* Upload Image Icon */}
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="image-outline" size={24} color="#666" />
+              </TouchableOpacity>
+
+              {/* Text Input Box */}
+              <TextInput
+                style={styles.chatInput}
+                placeholder="Type a message..."
+                placeholderTextColor="#999"
+                value={message}
+                onChangeText={setMessage}
+                onSubmitEditing={handleSendMessage} // Send message on Enter
+              />
+
+              {/* Camera Icon */}
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="camera-outline" size={24} color="#666" />
+              </TouchableOpacity>
+
+              {/* Mic Icon */}
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="mic-outline" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Preview Selected Image */}
+            {selectedImage && (
+              <View style={styles.imagePreviewContainer}>
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.imagePreview}
+                />
               </View>
-            ))}
+            )}
           </View>
         </View>
       )}
@@ -303,7 +427,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 100,
-   
   },
   buttongw: {
     flexDirection: "row",
@@ -381,14 +504,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
+  detailsContainer: {
+    maxHeight: 690, // Adjust based on your layout
+  },
   details: {
     flexDirection: "column",
     gap: 30,
+    paddingBottom: 10, // Adds space at the bottom
   },
+
   detailImage: {
     width: 47,
     height: 47,
   },
+
   detailImagea: {
     width: 25,
     height: 20,
@@ -409,6 +538,39 @@ const styles = StyleSheet.create({
     gap: 4,
     width: 100,
   },
+  messageContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  messageBox: {
+    maxWidth: "70%",
+    backgroundColor: "#f0f0f0",
+    
+    borderRadius: 10,
+  },
+  message: {
+    flexDirection: "column",
+    width: 400,
+    alignItems: 'flex-start'
+  },
+  messageText: {
+    fontSize: 14,
+    color: "#333",
+    
+  },
+  sentImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    marginBottom: 5,
+  },
   containerR: {
     flexDirection: "column",
     gap: 4,
@@ -417,7 +579,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    gap: 20
+    gap: 20,
   },
   columnContainer: {
     flexDirection: "row",
@@ -435,11 +597,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  profileImage: {
-    width: 36,
-    height: 36,
-    borderRadius: 50, // Round the image
-  },
+
   arrowContainer: {},
   arrow: {
     fontSize: 30, // Adjust the size of the arrow
@@ -447,6 +605,46 @@ const styles = StyleSheet.create({
   arrowImage: {
     width: 24,
     height: 24,
+  },
+  chatContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 10,
+    backgroundColor: "#f8f8f8",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+  },
+
+  chatInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  chatInput: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: "#333",
+  },
+  iconButton: {
+    padding: 8,
+  },
+  imagePreviewContainer: {
+    marginTop: 8,
+    alignItems: "center",
+  },
+  imagePreview: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
   },
 });
 
