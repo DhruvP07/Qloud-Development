@@ -15,6 +15,7 @@ import { Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import { globalStyles } from "@/globalStyles";
 
 interface SocialLinksState {
   instagram: string;
@@ -283,7 +284,7 @@ const CreateCommunityScreen: React.FC = () => {
   if (selectedScreen === "CreateCommunityScreen") {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Create Your Community</Text>
+        <Text style={globalStyles.regularText}>Create Your Community</Text>
         <View style={styles.containert}>
           <View style={styles.containert}>
             {/* Upload Image Button */}
@@ -305,7 +306,7 @@ const CreateCommunityScreen: React.FC = () => {
                     source={require("../../../assets/add.png")}
                     style={styles.imageTexts}
                   />
-                  <Text style={styles.uploadButtonText}>Tap to Add</Text>
+                  <Text style={globalStyles.regularText}>Tap to Add</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -329,7 +330,7 @@ const CreateCommunityScreen: React.FC = () => {
                     source={require("../../../assets/add.png")}
                     style={styles.imageTexts}
                   />
-                  <Text style={styles.uploadButtonText}>Tap to Add</Text>
+                  <Text style={globalStyles.regularText}>Tap to Add</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -352,7 +353,7 @@ const CreateCommunityScreen: React.FC = () => {
                 style={styles.selectedCategory}
                 onPress={() => setModalVisible(true)}
               >
-                <Text style={styles.categoryText}>
+                <Text style={globalStyles.regularText}>
                   {selectedCategory || "Pick Category"}
                 </Text>
               </TouchableOpacity>
@@ -375,7 +376,7 @@ const CreateCommunityScreen: React.FC = () => {
                       style={styles.categoryItem}
                       onPress={() => handleSelectCategory(item)}
                     >
-                      <Text style={styles.categoryItemText}>{item}</Text>
+                      <Text style={globalStyles.regularText}>{item}</Text>
                     </TouchableOpacity>
                   )}
                   keyExtractor={(item) => item}
@@ -384,7 +385,7 @@ const CreateCommunityScreen: React.FC = () => {
                   style={styles.closeButton}
                   onPress={() => setModalVisible(false)}
                 >
-                  <Text style={styles.closeButtonText}>Close</Text>
+                  <Text style={globalStyles.regularText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -401,7 +402,7 @@ const CreateCommunityScreen: React.FC = () => {
 
         {/* Submit Button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit</Text>
+          <Text style={globalStyles.regularText}>Submit</Text>
         </TouchableOpacity>
       </View>
     );
@@ -419,8 +420,8 @@ const CreateCommunityScreen: React.FC = () => {
             }}
           />
           <View style={styles.aacontainers}>
-            <Text style={styles.submittedText}>{communityName}</Text>
-            <Text style={styles.submittedText}>{selectedCategory}</Text>
+            <Text style={globalStyles.regularText}>{communityName}</Text>
+            <Text style={globalStyles.regularText}>{selectedCategory}</Text>
           </View>
         </View>
 
@@ -440,7 +441,7 @@ const CreateCommunityScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.socialLinksText}>Social Links:</Text>
+        <Text style={globalStyles.regularText}>Social Links:</Text>
 
         <View>
           <FlatList

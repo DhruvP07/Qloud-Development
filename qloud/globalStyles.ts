@@ -2,10 +2,15 @@
 import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
+  regularTextW: {
+    fontFamily: "Inter_400Regular", // Regular weight
+    fontSize: 14,
+    color: 'white'
+  },
   regularText: {
     fontFamily: "Inter_400Regular", // Regular weight
-    fontSize: 16,
-    color: 'white'
+    fontSize: 14,
+    color: 'black'
   },
   boldText: {
     fontFamily: "Inter_400Regular",

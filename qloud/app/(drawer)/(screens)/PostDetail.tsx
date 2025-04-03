@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router'; // Correct import
+import { globalStyles } from '@/globalStyles';
 
 const PostDetail = () => {
   const router = useRouter();  // Get the router instance
@@ -10,10 +11,10 @@ const PostDetail = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Post Detail</Text>
+      <Text style={globalStyles.regularText}>Post Detail</Text>
 
       {/* Display Community Name */}
-      <Text style={styles.communityName}>Community: {communityName}</Text>
+      <Text style={globalStyles.regularText}>Community: {communityName}</Text>
 
       {/* Display Profile Image */}
       {profileImage ? (

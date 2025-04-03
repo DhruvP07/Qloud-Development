@@ -11,6 +11,7 @@ import { useRoute } from "@react-navigation/native"; // Correct import for useRo
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { globalStyles } from "@/globalStyles";
 // Define the interface for the expected parameters
 interface PostDetailParams {
   communityName: string;
@@ -124,7 +125,7 @@ const PostDetail: React.FC<PostDetailParams> = ({
               />
             )}
           </View>
-          <Text style={styles.stepText}>{step}</Text>
+          <Text style={globalStyles.regularTextW}>{step}</Text>
         </View>
       ))}
     </View>
@@ -140,7 +141,7 @@ const PostDetail: React.FC<PostDetailParams> = ({
           />
         </TouchableOpacity>
         <View style={styles.buttongw}>
-          <Text>{communityName}</Text>
+          <Text style={globalStyles.regularText}>{communityName}</Text>
         </View>
       </View>
 
@@ -151,8 +152,8 @@ const PostDetail: React.FC<PostDetailParams> = ({
               <View style={styles.containerD}>
                 <Image source={details.image} style={styles.detailImage} />
                 <View style={styles.containerW}>
-                  <Text>{details.name}</Text>
-                  <Text>{details.social}</Text>
+                  <Text style={globalStyles.regularText}>{details.name}</Text>
+                  <Text style={globalStyles.regularText}>{details.social}</Text>
                 </View>
               </View>
             </View>
@@ -255,10 +256,10 @@ const CommunityMessage: React.FC = () => {
                 style={styles.profileImage}
               />
             ) : (
-              <Text>No profile image available</Text>
+              <Text style={globalStyles.regularText}>No profile image available</Text>
             )}
             <View style={styles.rowContainer}>
-              <Text style={styles.communityName}>{communityName}</Text>
+              <Text style={globalStyles.regularText}>{communityName}</Text>
 
               {/* Right Arrow Button to toggle PostDetail */}
               <TouchableOpacity
@@ -274,7 +275,7 @@ const CommunityMessage: React.FC = () => {
           </View>{" "}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.createButtonA}>
-              <Text style={styles.createButtonTextA}>All</Text>
+              <Text style={globalStyles.regularTextW}>All</Text>
             </TouchableOpacity>
             {["General", "Wins", "Exclusives"].map((label, index) => (
               <TouchableOpacity
@@ -291,7 +292,7 @@ const CommunityMessage: React.FC = () => {
               >
                 <Text
                   style={[
-                    styles.createButtonText,
+                    globalStyles.regularText,
                     hoveredButton === label && styles.hoverText, // Change text color
                   ]}
                 >
@@ -308,8 +309,8 @@ const CommunityMessage: React.FC = () => {
                   <View style={styles.containerD}>
                     <Image source={details.image} style={styles.detailImage} />
                     <View style={styles.containerR}>
-                      <Text>{details.name}</Text>
-                      <Text>{details.description}</Text>
+                      <Text style={globalStyles.regularText}>{details.name}</Text>
+                      <Text style={globalStyles.regularText}>{details.description}</Text>
                     </View>
                   </View>
                 </View>
@@ -328,7 +329,7 @@ const CommunityMessage: React.FC = () => {
 
                   {/* Name & Community Name */}
                   <View style={styles.message}>
-                    <Text>{msg.communityName}</Text>
+                    <Text style={globalStyles.regularText}>{msg.communityName}</Text>
                     {/* Message Box on Right */}
                     <View style={styles.messageBox}>
                       {msg.image && (
@@ -337,7 +338,7 @@ const CommunityMessage: React.FC = () => {
                           style={styles.sentImage}
                         />
                       )}
-                      <Text style={styles.messageText}>{msg.text}</Text>
+                      <Text style={globalStyles.regularText}>{msg.text}</Text>
                     </View>
                   </View>
                 </View>
