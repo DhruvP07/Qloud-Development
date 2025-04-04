@@ -145,7 +145,7 @@ const Login = () => {
       </TouchableOpacity>
 
       {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-        <Text style={globalStyles.regularText}>Log In</Text>
+        <Text style={globalStyles.regularTextW}>Log In</Text>
       </TouchableOpacity>}
 
       {!isSignUp&&<Text style={styles.orText}>or</Text>}
@@ -157,7 +157,7 @@ const Login = () => {
         </Text>
       </TouchableOpacity>}
       {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={createAccount}>
-        <Text style={globalStyles.regularText}>
+        <Text style={globalStyles.regularTextW}>
           {"Create Account"}
         </Text>
       </TouchableOpacity>}

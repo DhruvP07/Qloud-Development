@@ -62,21 +62,30 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
             <MaterialIcons name="folder" size={20} color="white" />
             <Text style={globalStyles.regularTextW}>Files</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.push("/Login")}
+            onPress={() => navigation.push("/Community")}
+          >
+            <MaterialIcons name="folder" size={20} color="white" />
+            <Text style={globalStyles.regularTextW}>Community</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.push("/Calendar")}
           >
             <MaterialIcons name="calendar-today" size={20} color="white" />
             <Text style={globalStyles.regularTextW}>Calendar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.push("/Mentor")}
           >
             <FontAwesome5 name="chalkboard-teacher" size={20} color="white" />
             <Text style={globalStyles.regularTextW}>Mentor</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             style={styles.menuItem}
@@ -86,21 +95,21 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation }) => {
             <Text style={globalStyles.regularTextW}>Team</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.push("/Links")}
           >
             <Entypo name="link" size={20} color="white" />
             <Text style={globalStyles.regularTextW}>Links</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.push("/Speeches")}
           >
             <Feather name="mic" size={20} color="white" />
             <Text style={globalStyles.regularTextW}>Speeches</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View>
