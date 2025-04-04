@@ -1,3 +1,4 @@
+import { globalStyles } from "@/globalStyles";
 import React, { useState } from "react";
 import {
   View,
@@ -20,11 +21,11 @@ const HelpCenter = () => {
         style={styles.option}
         onPress={() => handleOptionPress(option)}
       >
-        <Text style={styles.optionText}>{option}</Text>
+        <Text style={globalStyles.regularText}>{option}</Text>
       </TouchableOpacity>
       {expandedOption === option && (
         <View style={styles.answerContainer}>
-          <Text style={styles.answerText}>{answer}</Text>
+          <Text style={globalStyles.regularText}>{answer}</Text>
         </View>
       )}
     </View>
@@ -32,12 +33,12 @@ const HelpCenter = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Help Center</Text>
+      <Text style={globalStyles.boldText}>Help Center</Text>
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* Section: FAQs */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>FAQs</Text>
+          <Text style={globalStyles.boldText}>FAQs</Text>
           {renderOption(
             "What is Qloud?",
             "Qloud is a platform designed to connect professionals and provide access to communities, tools, and mentorship opportunities."
@@ -54,7 +55,7 @@ const HelpCenter = () => {
 
         {/* Section: Support */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
+          <Text style={globalStyles.boldText}>Support</Text>
           {renderOption(
             "Report a Problem",
             "If you encounter any issues, please report them through our support form or contact our team directly."
@@ -67,7 +68,7 @@ const HelpCenter = () => {
 
         {/* Section: Legal */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Legal</Text>
+          <Text style={globalStyles.boldText}>Legal</Text>
           {renderOption(
             "Terms of Service",
             "Our Terms of Service outline the rules and guidelines for using the Qloud platform. Please review them carefully."

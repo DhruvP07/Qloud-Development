@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import { globalStyles } from '@/globalStyles';
 
 const Files1: React.FC = () => {
   const [files, setFiles] = useState<{ id: string; uri: string; name: string }[]>([]);
@@ -43,18 +44,18 @@ const Files1: React.FC = () => {
         style={styles.fileImage}
         resizeMode="cover"
       />
-      <Text style={styles.fileName}>{item.name}</Text>
+      <Text style={globalStyles.regularText}>{item.name}</Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Text style={styles.title}>Your Files</Text>
+      <Text style={globalStyles.regularText}>Your Files</Text>
 
       {/* Upload Button */}
       <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
-        <Text style={styles.uploadButtonText}>Upload File</Text>
+        <Text style={globalStyles.regularText}>Upload File</Text>
       </TouchableOpacity>
 
       {/* File Grid */}
@@ -67,7 +68,7 @@ const Files1: React.FC = () => {
           contentContainerStyle={styles.fileGrid}
         />
       ) : (
-        <Text style={styles.emptyText}>No files uploaded yet.</Text>
+        <Text style={globalStyles.regularText}>No files uploaded yet.</Text>
       )}
     </View>
   );

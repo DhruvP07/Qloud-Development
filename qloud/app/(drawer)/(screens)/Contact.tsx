@@ -1,3 +1,4 @@
+import { globalStyles } from "@/globalStyles";
 import React from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
@@ -8,9 +9,9 @@ const Contact = () => {
 
       {/* Contact Credentials */}
       <View style={styles.credentials}>
-        <Text style={styles.credentialText}>📍 Address: 123 Main Street, London, UK</Text>
-        <Text style={styles.credentialText}>📧 Email: support@qloud.com</Text>
-        <Text style={styles.credentialText}>📞 Phone: +44 123 456 7890</Text>
+        <Text style={globalStyles.regularText}>📍 Address: 123 Main Street, London, UK</Text>
+        <Text style={globalStyles.regularText}>📧 Email: support@qloud.com</Text>
+        <Text style={globalStyles.regularText}>📞 Phone: +44 123 456 7890</Text>
       </View>
 
       {/* Input Fields */}
@@ -33,7 +34,7 @@ const Contact = () => {
 
       {/* Submit Button */}
       <TouchableOpacity style={styles.submitButton}>
-        <Text style={styles.submitButtonText}>Send</Text>
+        <Text style={globalStyles.regularText}>Send</Text>
       </TouchableOpacity>
     </View>
   );
