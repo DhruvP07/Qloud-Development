@@ -44,30 +44,30 @@ async function handleUserSignup(req, res){
     }   
 };
 
-async function handleUserSignin(req, res){   
-    const {email, password} = req.body;
-    //console.log(email);
+async function handleUserSignin(req, res) {
+    const { email, password } = req.body;
+    try {
+        const checkUser = await User.findOne({ email });
+        if (!checkUser) return res.json({ status: 'failure', message: 'User does not exist' });
 
-    try{
-        //Check if user exists
-        const chechUser = await User.findOne({email});
-        if (!chechUser) return res.json({status: 'failure', message: 'User does not exist'});
-        //console.log(chechUser);
-
-        //To check if the password is correct
-        const isPasswordCorrect = await bcrypt.compare(password, chechUser.password); // Assuming `password` in the database is hashed
+        // Check if the password matches
+        const isPasswordCorrect = await bcrypt.compare(password, checkUser.password);
         if (!isPasswordCorrect) {
             return res.json({ status: 'failure', message: 'Incorrect password' });
         }
 
-        //Generating the token.
-        const token = createTokenUser(chechUser)
+        // Generate the token with an expiration (1 hour in this case)
+        const token = createTokenUser(checkUser);
 
-        //return token
-        //console.log("token", token)
-        return res.json({status: 'success', message: 'User logged in successfully', token, user: chechUser});
-    }catch(e){
+        return res.json({
+            status: 'success',
+            message: 'User logged in successfully',
+            token,
+            user: checkUser,
+        });
+    } catch (e) {
         console.log(e);
+        return res.status(500).json({ status: 'failure', message: 'Internal Server Error' });
     }
 }
 

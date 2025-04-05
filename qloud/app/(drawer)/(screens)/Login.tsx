@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { forgotPassword } from "../../services/apiService";
+import { forgotPassword } from "../../services/authService";
 import { signIn, signUp } from "../../services/authService";
 import { globalStyles } from "@/globalStyles";
 
@@ -50,22 +50,23 @@ const Login = () => {
 
   const createAccount = async () => {
     setIsSignUp(true);
-  }
+  };
 
   const handleSignUp = async () => {
-    debugger;
-    // setIsSignUp(true); // Toggle to show sign-up fields
+    // Remove the debugger statement if you're done debugging
     if (isSignUp) {
       try {
-        debugger;
         const userData = await signUp(email, password, firstname, lastname); // Call API
         console.log("User signed in:", userData);
 
         Alert.alert("Success", "Logged in successfully!");
         if (userData.status == "success") {
-          Alert.alert("Error", "User"+firstname+" created successfully Please Login in Now");
-          setIsSignUp(false)
-          setIsSuccess(true)
+          Alert.alert(
+            "Success",
+            `User ${firstname} created successfully. Please log in now.`
+          );
+          setIsSignUp(false);
+          setIsSuccess(true);
           setLoginError(false);
         } else {
           setLoginError(true);
@@ -74,7 +75,6 @@ const Login = () => {
         setLoginError(true);
         Alert.alert("Error", "Login failed!");
       }
-
     }
   };
 
@@ -87,16 +87,16 @@ const Login = () => {
     try {
       await forgotPassword(email);
       Alert.alert("Success", "Password reset link sent.");
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>QLOUD</Text>
       <Text style={globalStyles.regularText}>Welcome back!</Text>
-      <Text style={globalStyles.regularText}>We’re excited to see you again!</Text>
+      <Text style={globalStyles.regularText}>
+        We’re excited to see you again!
+      </Text>
 
       <Text style={globalStyles.regularText}>Enter credentials to log in</Text>
 
@@ -133,35 +133,48 @@ const Login = () => {
         secureTextEntry
       />
 
-      
-      {!setPassword  && <Text style={styles.errorText}>Password missing,please enter password to login</Text>}
-      {!setEmail  && <Text style={styles.errorText}> Email missing,please enter email to login</Text>}
+      {!setPassword && (
+        <Text style={styles.errorText}>
+          Password missing,please enter password to login
+        </Text>
+      )}
+      {!setEmail && (
+        <Text style={styles.errorText}>
+          {" "}
+          Email missing,please enter email to login
+        </Text>
+      )}
 
       {loginError && <Text style={styles.errorText}>Login Failed</Text>}
-      {isSuccess  && <Text style={styles.successText}>User {firstname} added successfully , Please login now </Text>}
+      {isSuccess && (
+        <Text style={styles.successText}>
+          User {firstname} added successfully , Please login now{" "}
+        </Text>
+      )}
 
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={globalStyles.regularText}>Forgot your password?</Text>
       </TouchableOpacity>
 
-      {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
-        <Text style={globalStyles.regularTextW}>Log In</Text>
-      </TouchableOpacity>}
+      {!isSignUp && (
+        <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+          <Text style={globalStyles.regularTextW}>Log In</Text>
+        </TouchableOpacity>
+      )}
 
-      {!isSignUp&&<Text style={styles.orText}>or</Text>}
+      {!isSignUp && <Text style={styles.orText}>or</Text>}
 
       {/* Toggle between "Create Account" and "Sign Up" */}
-      {isSignUp && <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
-        <Text style={globalStyles.regularText}>
-          {"Sign Up"}
-        </Text>
-      </TouchableOpacity>}
-      {!isSignUp && <TouchableOpacity style={styles.signInButton} onPress={createAccount}>
-        <Text style={globalStyles.regularTextW}>
-          {"Create Account"}
-        </Text>
-      </TouchableOpacity>}
-
+      {isSignUp && (
+        <TouchableOpacity style={styles.signInButton} onPress={handleSignUp}>
+          <Text style={globalStyles.regularTextW}>{"Sign Up"}</Text>
+        </TouchableOpacity>
+      )}
+      {!isSignUp && (
+        <TouchableOpacity style={styles.signInButton} onPress={createAccount}>
+          <Text style={globalStyles.regularTextW}>{"Create Account"}</Text>
+        </TouchableOpacity>
+      )}
 
       {/* <TouchableOpacity style={styles.googleButton}>
         <Text style={styles.googleText}>Continue With Google</Text>
