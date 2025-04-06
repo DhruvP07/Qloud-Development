@@ -1,6 +1,5 @@
-const jwt = require("jsonwebtoken");
-
-const secret = 'QloudDevelopmentSecretKeyMartinMarvan'
+const { validateToken } = require("../services/authentication");
+require("dotenv").config();
 
 module.exports = {
   authenticateUser: (req, res, next) => {
@@ -14,7 +13,7 @@ module.exports = {
     const token = authHeader.replace("Bearer ", "").trim();
 
     try {
-      const verified = jwt.verify(token, secret);
+      const verified = validateToken(token);;
       req.user = verified;
       next();
     } catch (error) {

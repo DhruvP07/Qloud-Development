@@ -4,10 +4,10 @@ const express = require('express');
 
 //Database
 const mongoose = require('mongoose');
-const {connectMongoDb} = require('./connections');
+const { connectMongoDb } = require('./connections');
 
 //Middlewares
-const { authenticateUser,authorizeBusiness } = require('./middlewares/authentication');
+const { authenticateUser, authorizeBusiness } = require('./middlewares/authentication');
 
 //Routes
 const userRouter = require('./routes/usersAuthenticationRoutes');
@@ -19,26 +19,26 @@ const userProfileRouter = require('./routes/userProfileRoutes');
 const cartRouter = require('./routes/cartRoutes');
 const userSelectRouter = require('./routes/userRoutes');
 const questionRouter = require('./routes/questionRoutes');
+const chatRouter = require('./routes/chatRoutes');
+const messageRouter = require('./routes/messageRoutes');
+const taskRouter = require('./routes/taskRoutes');
+
+require("dotenv").config();
 
 //Server
 const app = express();
-PORT = 8000;
+PORT = process.env.port || 8000;
 
 
 //Middlewares
 app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
-// app.use(checkForAuthentication);
+app.use(express.urlencoded({ extended: false }));
 
 const cors = require('cors');
-app.use(cors({
-    origin: 'http://localhost:8081',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.options('*', cors());
+app.use(cors());
+
 //MongoDB Connection
-connectMongoDb('mongodb+srv://dhruvrp1703:DhruvPrajapati1731@qloud.lzryb.mongodb.net/Qloud')
+connectMongoDb(process.env.DB_URI)
     .then(() => console.log('connected to mongoDb'))
     .catch((err) => console.log('Error connecting to MongoDB', err));
 
@@ -63,6 +63,15 @@ app.use("/product-sub-category", productSubCategoryRouter);
 app.use("/product", productRouter);
 
 //Cart Routes -- Restricted to user. need to add restrictTo["USER"] later.  
-app.use("/cart", cartRouter);
+app.use("/cart", authenticateUser, cartRouter);
 
-app.listen(PORT, ()=>{console.log(`Server Started at port, ${PORT}`)});
+//Chat Routes
+app.use("/chat", authenticateUser, chatRouter);
+
+//Message Routes
+app.use("/message", authenticateUser, messageRouter);
+
+//Tasks Routes
+app.use("/tasks", authenticateUser, taskRouter);
+
+app.listen(PORT, () => { console.log(`Server Started at port, ${PORT}`) });
