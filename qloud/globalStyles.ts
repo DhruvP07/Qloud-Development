@@ -18,9 +18,21 @@ export const globalStyles = StyleSheet.create({
     fontSize: 18,
     color: 'white'
   },
+  boldTextW: {
+    fontFamily: "Inter_400Regular",
+    fontWeight: "bold", // Makes it bold
+    fontSize: 18,
+    color: 'black'
+  },
   largeText: {
     fontFamily: "Inter_400Regular",
     fontSize: 24, // Larger text
     color: 'white'
+  },
+  largeTextB: {
+    fontFamily: "Inter_400Regular",
+    fontSize: 24, // Larger text
+    color: 'black',
+    fontWeight: "bold",
   },
 });
