@@ -10,8 +10,13 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { globalStyles } from "@/globalStyles";
+import { useNavigation } from "@react-navigation/native";
+import { router, Router, useRouter } from "expo-router";
+import hello from "../(screens)/SellorRaise"
 
 const Connection: React.FC = () => {
+  const router = useRouter();
+
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState("Product");
 
@@ -95,7 +100,7 @@ const Connection: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.Market}>
         <Text>Marketplace</Text>
-        <TouchableOpacity style={styles.sell}>Sell/Raise</TouchableOpacity>
+        <TouchableOpacity style={styles.sell} onPress={() => router.push("/SellorRaise")}>Sell/Raise</TouchableOpacity>
       </View>
 
       {/* Search Bar */}
