@@ -17,6 +17,15 @@ import Slider from "@react-native-community/slider";
 const Snippets = () => {
   const [investment, setInvestment] = useState(125);
   const [showPopup, setShowPopup] = useState(false);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(10000);
+  const [term, setTerm] = useState(6);
+  const [revenueShare, setRevenueShare] = useState(6);
+  const totalRevenue = monthlyRevenue * term;
+  const shareDecimal = revenueShare / 100;
+  const durationWeight = term >= 12 ? 1.1 : term >= 6 ? 1.05 : 1;
+
+  const revenueShareTotal = totalRevenue * shareDecimal;
+  const finalContribution = revenueShareTotal * durationWeight;
 
   return (
     <View style={styles.container}>
@@ -108,7 +117,10 @@ const Snippets = () => {
             </TouchableOpacity>
           </View>
 
-          <Text style={globalStyles.largeTextB}>$225.00</Text>
+          <Text style={globalStyles.largeTextB}>
+            $
+            {finalContribution.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          </Text>
         </View>
         <View style={styles.containeru}>
           <TouchableOpacity style={styles.button}>
@@ -151,13 +163,13 @@ const styles = StyleSheet.create({
     elevation: 5,
     zIndex: 10,
     alignItems: "center",
-    gap: 16
+    gap: 16,
   },
   popupText: {
     fontSize: 14,
-    alignItems: 'center',
+    alignItems: "center",
     width: 200,
-    textAlign: 'center'
+    textAlign: "center",
   },
   closeButton: {
     alignItems: "center",

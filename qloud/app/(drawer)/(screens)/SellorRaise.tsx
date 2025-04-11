@@ -12,9 +12,11 @@ import {
   Linking,
   Button,
 } from "react-native";
+import { router, Router, useRouter } from "expo-router";
 
 const SellorRaise = () => {
   const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
 
   return (
     <View
@@ -153,6 +155,7 @@ const SellorRaise = () => {
               backgroundColor: "#E1E1E1",
               borderRadius: 12,
             }}
+            onPress={() => router.push("/RaiseFund")}
           >
             <View
               style={{
@@ -236,7 +239,7 @@ const SellorRaise = () => {
               fontSize: 24,
               alignItems: "center",
               textAlign: "center",
-              width: 220
+              width: 220,
             }}
           >
             How does Selling and %ROI work?
