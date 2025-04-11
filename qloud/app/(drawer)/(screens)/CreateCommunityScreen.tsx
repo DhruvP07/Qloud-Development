@@ -402,7 +402,7 @@ const CreateCommunityScreen: React.FC = () => {
 
         {/* Submit Button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={globalStyles.regularText}>Submit</Text>
+          <Text style={{color: 'white'}}>Submit</Text>
         </TouchableOpacity>
       </View>
     );
@@ -420,7 +420,7 @@ const CreateCommunityScreen: React.FC = () => {
             }}
           />
           <View style={styles.aacontainers}>
-            <Text style={globalStyles.regularText}>{communityName}</Text>
+            <Text style={{fontFamily: "Inter", fontWeight: '700', fontSize: 18}}>{communityName}</Text>
             <Text style={globalStyles.regularText}>{selectedCategory}</Text>
           </View>
         </View>
@@ -441,7 +441,7 @@ const CreateCommunityScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={globalStyles.regularText}>Social Links:</Text>
+        {/* <Text style={globalStyles.regularText}>Social Links:</Text> */}
 
         <View>
           <FlatList
@@ -488,7 +488,9 @@ const styles = StyleSheet.create({
   },
   aacontainers: {
     flexDirection: "column",
-    gap: 16,
+    gap: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   container: {
     flex: 1,

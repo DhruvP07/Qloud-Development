@@ -125,7 +125,7 @@ const PostDetail: React.FC<PostDetailParams> = ({
               />
             )}
           </View>
-          <Text style={globalStyles.regularTextW}>{step}</Text>
+          <Text style={{fontFamily: 'Inter'}}>{step}</Text>
         </View>
       ))}
     </View>
