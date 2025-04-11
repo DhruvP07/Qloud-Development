@@ -17,6 +17,7 @@ import { router, Router, useRouter } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
 
 const FundingCamp = () => {
+  const [expectedFunding, setExpectedFunding] = useState("");
   return (
     <View
       style={{
@@ -128,19 +129,24 @@ const FundingCamp = () => {
         <Text>How Much Money You Expect To Raise</Text>
       </View>
 
-      <TouchableOpacity
+      {/* Input Field */}
+      <TextInput
         style={{
           width: 222,
           height: 52,
-          justifyContent: "center",
-          alignItems: "center",
+          paddingHorizontal: 16,
           backgroundColor: "#EEEEEE",
           borderRadius: 12,
+          textAlign: "center",
+          fontSize: 16,
         }}
-      >
-        <Text>Expected Funding Raised</Text>
-      </TouchableOpacity>
+        placeholder="Enter funding amount"
+        keyboardType="numeric"
+        value={expectedFunding}
+        onChangeText={setExpectedFunding}
+      />
 
+      {/* Display Raised Value */}
       <View
         style={{
           flexDirection: "column",
@@ -153,7 +159,7 @@ const FundingCamp = () => {
           Raising
         </Text>
         <Text style={{ fontFamily: "Inter", fontWeight: "700", fontSize: 24 }}>
-          $3000
+          ${expectedFunding || "0"}
         </Text>
       </View>
 
@@ -172,9 +178,9 @@ const FundingCamp = () => {
             backgroundColor: "#E1E1E1",
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: 5
+            borderRadius: 5,
           }}
-          onPress={() => router.push('/StartFunding')}
+          onPress={() => router.push("/StartFunding")}
         >
           <Image source={require("../../../assets/left.png")} />
         </TouchableOpacity>
@@ -185,9 +191,9 @@ const FundingCamp = () => {
             backgroundColor: "#000",
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: 5
+            borderRadius: 5,
           }}
-          onPress={() => router.push('/Deadline')}
+          onPress={() => router.push("/Deadline")}
         >
           <Text style={{ color: "#FFF" }}>Set Deadlines</Text>
         </TouchableOpacity>

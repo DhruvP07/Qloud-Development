@@ -303,7 +303,7 @@ const Deadline = () => {
             alignItems: "center",
             borderRadius: 5,
           }}
-          onPress={() => router.push("/StartFunding")}
+          onPress={() => router.push("/FundingCamp")}
         >
           <Image source={require("../../../assets/left.png")} />
         </TouchableOpacity>

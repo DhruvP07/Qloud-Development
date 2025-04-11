@@ -1,5 +1,5 @@
 import { globalStyles } from "@/globalStyles";
-import React, { useState } from "react";
+
 import {
   View,
   Text,
@@ -13,9 +13,38 @@ import {
   Button,
 } from "react-native";
 import Slider from "@react-native-community/slider";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
+interface FundingData {
+  fundingGoal: string;
+  setFundingGoal: Dispatch<SetStateAction<string>>;
+  deadlineDate: Date;
+  setDeadlineDate: Dispatch<SetStateAction<Date>>;
+  roiPercentage: number;
+  setRoiPercentage: Dispatch<SetStateAction<number>>;
+  goalSet: boolean;
+  setGoalSet: Dispatch<SetStateAction<boolean>>;
+  deadlineSet: boolean;
+  setDeadlineSet: Dispatch<SetStateAction<boolean>>;
+  roiSet: boolean;
+  setRoiSet: Dispatch<SetStateAction<boolean>>;
+  setGoalData: (goal: string) => void;
+  setDeadlineData: (date: Date) => void;
+  setROIData: (roi: number) => void;
+}
 const Campaign = () => {
+  const router = useRouter();
+  const [goalSet, setGoalSet] = useState(false);
+  const [deadlineSet, setDeadlineSet] = useState(false);
+  const [roiSet, setRoiSet] = useState(false);
+
   return (
     <View
       style={{
@@ -132,9 +161,185 @@ const Campaign = () => {
           Review Your Campaign
         </Text>
         <Text>How Long Before Your Investors Start Seeing Returns</Text>
-       
       </View>
 
+      <View
+        style={{
+          flexDirection: "column",
+          gap: 24,
+          justifyContent: "space-around",
+          alignItems: "flex-start",
+          width: 300
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: 300
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 8,
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#616161",
+                fontSize: 16,
+              }}
+            >
+              Campaign Funding Goal
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#000",
+                fontSize: 24,
+              }}
+            >
+              $2000
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 29,
+              height: 29,
+              borderRadius: 8,
+              backgroundColor: "#EEE",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity onPress={() => router.push('/FundingCamp') }>
+              <Image
+                source={require("../../../assets/edit.png")}
+                style={{ width: 17, height: 17 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: 300
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 8,
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#616161",
+                fontSize: 16,
+              }}
+            >
+              Campaign End Date
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#000",
+                fontSize: 24,
+              }}
+            >
+              8th April(14 Days)
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 29,
+              height: 29,
+              borderRadius: 8,
+              backgroundColor: "#EEE",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+             <TouchableOpacity onPress={() => router.push('/Deadline') }>
+              <Image
+                source={require("../../../assets/edit.png")}
+                style={{ width: 17, height: 17 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: 300,
+            gap: 40
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              gap: 8,
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#616161",
+                fontSize: 16,
+              }}
+            >
+              %ROI For Investors
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Inter",
+                fontWeight: "700",
+                color: "#000",
+                fontSize: 24,
+              }}
+            >
+              $30.86
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 29,
+              height: 29,
+              borderRadius: 8,
+              backgroundColor: "#EEE",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+             <TouchableOpacity onPress={() => router.push('/Investor') }>
+              <Image
+                source={require("../../../assets/edit.png")}
+                style={{ width: 17, height: 17 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -167,7 +372,7 @@ const Campaign = () => {
           }}
           onPress={() => router.push("/Campaign")}
         >
-          <Text style={{ color: "#FFF" }}>Review Campaign</Text>
+          <Text style={{ color: "#FFF" }}>Publish Your Campaign</Text>
         </TouchableOpacity>
       </View>
     </View>

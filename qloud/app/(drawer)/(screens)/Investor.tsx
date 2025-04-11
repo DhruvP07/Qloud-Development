@@ -12,12 +12,21 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { globalStyles } from "@/globalStyles";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import Slider from "@react-native-community/slider";
 
 const Investor = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [investment, setInvestment] = useState(125);
+  const [investment, setInvestment] = useState(1.1);
+  const router = useRouter();
+
+  const increaseInvestment = () => {
+    setInvestment((prev) => Math.min(3.0, parseFloat((prev + 0.1).toFixed(1))));
+  };
+
+  const decreaseInvestment = () => {
+    setInvestment((prev) => Math.max(1.1, parseFloat((prev - 0.1).toFixed(1))));
+  };
 
   return (
     <View
@@ -175,7 +184,7 @@ const Investor = () => {
         <View style={styles.sliderContainer}>
           <View style={styles.sliderTe}>
             <Text>1.1x</Text>
-            <Text>3.0</Text>
+            <Text>3.0x</Text>
           </View>
 
           <View style={styles.trackBackground}>
@@ -183,6 +192,7 @@ const Investor = () => {
               style={styles.slider}
               minimumValue={1.1}
               maximumValue={3.0}
+              step={0.1}
               minimumTrackTintColor="#EEEEEE"
               maximumTrackTintColor="#EEEEEE"
               thumbImage={require("../../../assets/thumbSlide.png")}
@@ -192,42 +202,61 @@ const Investor = () => {
           </View>
         </View>
 
-        <View style={{flexDirection: 'row', gap: 8}}>
-          <View
-            style={{
-              width: 71,
-              height: 50,
-              backgroundColor: "#EEE",
-              borderRadius: 8,
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: 'row',
-              gap: 4
-            }}
-          >
-            <Image source={require('../../../assets/minus.png')} style={{width: 20, height: 20}}/>
-            <Text>0.1x</Text>
-          </View>
-          <View
-            style={{
-              width: 71,
-              height: 50,
-              backgroundColor: "#EEE",
-              borderRadius: 8,
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: 'row',
-              gap: 4
-            }}
-          >
-            <Image source={require('../../../assets/added.png')}  style={{width: 20, height: 20}}/>
-            <Text>0.1x</Text>
-          </View>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {/* Decrease Button */}
+          <TouchableOpacity onPress={decreaseInvestment}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 8,
+                backgroundColor: "#EEE",
+                width: 71,
+                height: 40,
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../../../assets/minus.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text>{investment.toFixed(1)}x</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Increase Button */}
+          <TouchableOpacity onPress={increaseInvestment}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 8,
+                backgroundColor: "#EEE",
+                width: 71,
+                height: 40,
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../../../assets/added.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text>{investment.toFixed(1)}x</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
-        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{fontFamily: 'Inter', fontWeight: 400, fontSize: 16}}>Investor ROI</Text>
-            <Text style={{fontFamily: 'Inter', fontWeight: 700, fontSize: 24}}>126% ROI</Text>
+        <View style={{ alignItems: "center", marginTop: 16 }}>
+          <Text style={{ fontFamily: "Inter", fontSize: 16 }}>
+            Investor ROI
+          </Text>
+          <Text
+            style={{ fontFamily: "Inter", fontWeight: "700", fontSize: 24 }}
+          >
+            {((investment - 1) * 100).toFixed(0)}% ROI
+          </Text>
         </View>
       </View>
 
@@ -248,7 +277,7 @@ const Investor = () => {
             alignItems: "center",
             borderRadius: 5,
           }}
-          onPress={() => router.push("/Deadline")}
+          onPress={() => router.push("/StartFunding")}
         >
           <Image source={require("../../../assets/left.png")} />
         </TouchableOpacity>
