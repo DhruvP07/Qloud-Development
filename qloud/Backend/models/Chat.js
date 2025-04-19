@@ -4,7 +4,7 @@ const ChatSchema = new mongoose.Schema(
     {
         type: {
             type: String,
-            enum: ["one-on-one", "group"],
+            enum: ["one-on-one", "group", "community"],
             required: true,
         },
         participants: [
@@ -16,7 +16,7 @@ const ChatSchema = new mongoose.Schema(
         ],
         admin: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "users", // Only for group chats
+            ref: "users",
         },
         name: {
             type: String,
@@ -26,6 +26,16 @@ const ChatSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
+        isPublic: {
+            type: Boolean,
+            default: false,
+        },
+        joinRequests: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "users",
+            },
+        ],
     },
     { timestamps: true }
 );
